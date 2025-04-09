@@ -8,41 +8,27 @@
 #import "LibretroCore.h"
 #import "libretro.h"
 #import <dlfcn.h> // For dlopen, dlsym, dlclose
+#import <os/log.h>
 
-// MARK: Static Libretro C Callbacks
-
-static __weak LibretroCore *current_loaded_core = nil;
-
-static bool environment_callback(unsigned cmd, void *data) {
-    NSLog(@"[Environment] Unknown command: %d", cmd);
-    return false;
+static os_log_t loggerInstance;
+static os_log_t logger(void) {
+    if (!loggerInstance) {
+        loggerInstance = os_log_create("com.mbh.SwiftRetro", "LibretroCore");
+    }
+    return loggerInstance;
 }
 
-static void video_refresh_callback(const void *data, unsigned width,
-                                   unsigned height, size_t pitch) {}
-
-static void audio_sample_callback(int16_t left, int16_t right) {}
-
-static size_t audio_sample_batch_callback(const int16_t *data, size_t frames) {
-    return 0;
-}
-
-static void input_poll_callback(void) {}
-
-static int16_t input_state_callback(unsigned port, unsigned device,
-                                    unsigned index, unsigned id) {
-    return 0;
-}
+// MARK: LibretroCore Declarations
 
 @implementation LibretroCore {
     // For some reason "==" doesn't work when comparing "currently_loaded_core"
     // and "self", so we have to keep track of whether this core is active.
     bool isActive;
-    
+
+    bool supportNoGame;
+
     // Handle for the dynamic library
     void *coreHandle;
-
-    // MARK: Retro API Function Pointers
 
     // Callback setters
     void (*retro_set_environment)(retro_environment_t cb);
@@ -90,12 +76,51 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     size_t (*retro_get_memory_size)(unsigned id);
 }
 
+// MARK: Static Libretro C Callbacks
+
+static __weak LibretroCore *current_loaded_core = nil;
+
+static bool environment_callback(unsigned cmd, void *data) {
+    os_log_debug(logger(), "[Environment] Received command %d", cmd);
+    LibretroCore *core = current_loaded_core;
+    if (!core) {
+        os_log_fault(logger(), "[Environment] No loaded core.");
+        return false;
+    }
+    switch (cmd) {
+    case RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME:
+        core->supportNoGame = true;
+        return true;
+    }
+    os_log_error(logger(), "[Environment] Unknown command: %d", cmd);
+    return false;
+}
+
+static void video_refresh_callback(const void *data, unsigned width,
+                                   unsigned height, size_t pitch) {}
+
+static void audio_sample_callback(int16_t left, int16_t right) {}
+
+static size_t audio_sample_batch_callback(const int16_t *data, size_t frames) {
+    return 0;
+}
+
+static void input_poll_callback(void) {}
+
+static int16_t input_state_callback(unsigned port, unsigned device,
+                                    unsigned index, unsigned id) {
+    return 0;
+}
+
+// MARK: LibretroCore Implementation
+
 - (nullable instancetype)initWithCorePath:(NSString *)corePath {
-    isActive = false;
-    
+    os_log_info(logger(), "[Core Alloc] Attempting to open core at path %@",
+                corePath);
     coreHandle = dlopen(corePath.UTF8String, RTLD_LAZY);
     if (!coreHandle) {
-        NSLog(@"[Core Constructor] Error: Failed to open core: %s", dlerror());
+        os_log_fault(logger(), "[Core Alloc] Failed to open core: %s",
+                     dlerror());
         return nil;
     }
 
@@ -146,7 +171,8 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 
     // TODO: Check for all functions somehow
     if (!retro_init || !retro_load_game || !retro_run) {
-        NSLog(@"[Core Constructor] Error: Missing required retro API symbols");
+        os_log_fault(logger(),
+                     "[Core Alloc] Missing required retro API symbols.");
         return nil;
     }
     return self;
@@ -159,31 +185,36 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     if (coreHandle) {
         dlclose(coreHandle);
     }
-    NSLog(@"[Core Dealloc] Finished deallocated core.");
+    os_log_debug(logger(), "[Core Dealloc] Finished deallocating core.");
 }
 
 - (BOOL)load {
     if (current_loaded_core != nil) {
-        NSLog(@"[LoadCore] Error: Another core instance is already active.");
+        os_log_error(logger(),
+                     "[LoadCore] Another core instance is already active.");
         return NO;
     }
 
     if (retro_api_version() != RETRO_API_VERSION) {
-        NSLog(@"[LoadCore] Error: Unsupported retro API version. Required: %d; "
-              @"Found: %d",
-              RETRO_API_VERSION, retro_api_version());
+        os_log_error(
+            logger(),
+            "[LoadCore] Unsupported retro API version. Required: %d; Found: %d",
+            RETRO_API_VERSION, retro_api_version());
         return NO;
     }
 
     struct retro_system_info systemInfo = {0};
     retro_get_system_info(&systemInfo);
-    NSLog(@"[LoadCore] Initializing core: %s", systemInfo.library_name);
+    os_log_info(logger(), "[LoadCore] Initializing core: %s",
+                systemInfo.library_name);
+
+    // TODO: initialize state used by static callbacks.
 
     // Make sure the static callbacks can reference this instance before
     // installing them.
     current_loaded_core = self;
-    self->isActive = true;
-    
+    isActive = true;
+
     retro_set_environment(environment_callback);
     retro_set_video_refresh(video_refresh_callback);
     retro_set_audio_sample(audio_sample_callback);
@@ -193,14 +224,16 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 
     retro_init();
 
-    NSLog(@"[LoadCore] Core loaded successfully: %s", systemInfo.library_name);
+    os_log_info(logger(), "[LoadCore] Successfully loaded core: %s",
+                systemInfo.library_name);
     return YES;
 }
 
 - (void)unload {
     if (!isActive) {
-        NSLog(@"[UnloadCore] Error: Attempted to unload an already unloaded "
-              @"core.");
+        os_log_error(
+            logger(),
+            "[UnloadCore] Attempted to unload an already unloaded core.");
         return;
     }
     struct retro_system_info systemInfo = {0};
@@ -212,13 +245,13 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 
     isActive = false;
     current_loaded_core = nil;
-    NSLog(@"[UnloadCore] Successfully unloaded core: %s",
-          systemInfo.library_name);
+    os_log_info(logger(), "[UnloadCore] Successfully unloaded core: %s",
+                systemInfo.library_name);
 }
 
 - (void)runFrame {
     if (!isActive) {
-        NSLog(@"[RunFrame] Error: Attempted to run an unloaded core.");
+        os_log_error(logger(), "[RunFrame] Attempted to run an unloaded core.");
         return;
     }
     if (retro_run) {

@@ -423,6 +423,20 @@
 			);
 			target = C9A879872DA61A9E00AAE9BB /* SwiftRetroCLI */;
 		};
+		C9A879A12DA6317C00AAE9BB /* Exceptions for "SwiftRetroCLI" folder in "SwiftRetro" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				main.swift,
+			);
+			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro */;
+		};
+		C9A879A22DA6317C00AAE9BB /* Exceptions for "SwiftRetroCLI" folder in "SwiftRetroCLI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				main.swift,
+			);
+			target = C9A879872DA61A9E00AAE9BB /* SwiftRetroCLI */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -445,17 +459,21 @@
 			path = SwiftRetro;
 			sourceTree = "<group>";
 		};
-		C9A879892DA61A9E00AAE9BB /* SwiftRetroCLI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SwiftRetroCLI;
-			sourceTree = "<group>";
-		};
 		C9A879912DA61B6500AAE9BB /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				C9A879992DA61BA900AAE9BB /* Exceptions for "Resources" folder in "Copy Files" phase from "SwiftRetroCLI" target */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		C9A8799F2DA6317C00AAE9BB /* SwiftRetroCLI */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C9A879A12DA6317C00AAE9BB /* Exceptions for "SwiftRetroCLI" folder in "SwiftRetro" target */,
+				C9A879A22DA6317C00AAE9BB /* Exceptions for "SwiftRetroCLI" folder in "SwiftRetroCLI" target */,
+			);
+			path = SwiftRetroCLI;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -481,11 +499,11 @@
 		C9A876642DA5525E00AAE9BB = {
 			isa = PBXGroup;
 			children = (
-				C9A879892DA61A9E00AAE9BB /* SwiftRetroCLI */,
 				C9A8766F2DA5525E00AAE9BB /* SwiftRetro */,
+				C9A8799F2DA6317C00AAE9BB /* SwiftRetroCLI */,
+				C9A879912DA61B6500AAE9BB /* Resources */,
 				C9A878752DA552D800AAE9BB /* libretro-common */,
 				C9A8766E2DA5525E00AAE9BB /* Products */,
-				C9A879912DA61B6500AAE9BB /* Resources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1819,6 +1837,7 @@
 			fileSystemSynchronizedGroups = (
 				C9A8766F2DA5525E00AAE9BB /* SwiftRetro */,
 				C9A879912DA61B6500AAE9BB /* Resources */,
+				C9A8799F2DA6317C00AAE9BB /* SwiftRetroCLI */,
 			);
 			name = SwiftRetro;
 			packageProductDependencies = (
@@ -1838,9 +1857,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				C9A879892DA61A9E00AAE9BB /* SwiftRetroCLI */,
 			);
 			name = SwiftRetroCLI;
 			packageProductDependencies = (

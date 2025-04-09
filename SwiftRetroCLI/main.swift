@@ -8,7 +8,6 @@
 func main() {
     let core = LibretroCore(corePath: "2048_libretro.dylib")!
     core.load()
-    core.unload()
 }
 
 main()
