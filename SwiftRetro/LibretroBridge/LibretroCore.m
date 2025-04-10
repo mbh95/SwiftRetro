@@ -23,12 +23,13 @@ static os_log_t logger(void) {
 @implementation LibretroCore {
     // For some reason "==" doesn't work when comparing "currently_loaded_core"
     // and "self", so we have to keep track of whether this core is active.
-    bool isActive;
+    bool _isActive;
 
-    bool supportNoGame;
+    bool _supportNoGame;
+    enum retro_pixel_format _pixelFormat;
 
     // Handle for the dynamic library
-    void *coreHandle;
+    void *_coreHandle;
 
     // Callback setters
     void (*retro_set_environment)(retro_environment_t cb);
@@ -78,26 +79,89 @@ static os_log_t logger(void) {
 
 // MARK: Static Libretro C Callbacks
 
-static __weak LibretroCore *current_loaded_core = nil;
+static __weak LibretroCore *g_current_loaded_core = nil;
+
+static void core_log(enum retro_log_level level, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    NSString *message =
+        [[NSString alloc] initWithFormat:[NSString stringWithUTF8String:fmt]
+                               arguments:args];
+    va_end(args);
+
+    switch (level) {
+    case RETRO_LOG_DEBUG:
+        os_log_debug(logger(), "[Core Debug] %@", message);
+        break;
+    case RETRO_LOG_INFO:
+        os_log(logger(), "[Core Info] %@", message);
+        break;
+    case RETRO_LOG_WARN:
+        os_log_error(logger(), "[Core Warning] %@", message);
+        break;
+    case RETRO_LOG_ERROR:
+        NSLog(@"[Core Error] %@", message);
+        os_log_fault(logger(), "[Core Error] %@", message);
+        break;
+    default:
+        os_log(logger(), "[Core] %@", message);
+        break;
+    }
+}
 
 static bool environment_callback(unsigned cmd, void *data) {
-    os_log_debug(logger(), "[Environment] Received command %d", cmd);
-    LibretroCore *core = current_loaded_core;
+    LibretroCore *core = g_current_loaded_core;
     if (!core) {
         os_log_fault(logger(), "[Environment] No loaded core.");
         return false;
     }
     switch (cmd) {
-    case RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME:
-        core->supportNoGame = true;
+    case RETRO_ENVIRONMENT_SET_PIXEL_FORMAT: { // 10
+        const enum retro_pixel_format *format =
+            (const enum retro_pixel_format *)data;
+        os_log_debug(logger(), "[Environment] Core requested pixel format: %d",
+                     *format);
+        if (*format == RETRO_PIXEL_FORMAT_0RGB1555) {
+            core->_pixelFormat = *format;
+            return true;
+        }
+        os_log_error(logger(),
+                     "[Environment] Unsupported pixel format requested: %d",
+                     *format);
+        return false;
+    }
+    case RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME: { // 18
+        os_log_debug(logger(),
+                     "[Environment] Core supports running with no game.");
+        core->_supportNoGame = true;
         return true;
+    }
+    case RETRO_ENVIRONMENT_GET_LOG_INTERFACE: { // 27
+        os_log_debug(logger(), "[Environment] Installed core logger.");
+        struct retro_log_callback *cb = (struct retro_log_callback *)data;
+        cb->log = core_log;
+        return true;
+    }
     }
     os_log_error(logger(), "[Environment] Unknown command: %d", cmd);
     return false;
 }
 
 static void video_refresh_callback(const void *data, unsigned width,
-                                   unsigned height, size_t pitch) {}
+                                   unsigned height, size_t pitch) {
+    os_log_debug(logger(), "[Video Refresh] Video refresh called.");
+    LibretroCore *core = g_current_loaded_core;
+    if (!core || !core.delegate ||
+        ![core.delegate respondsToSelector:@selector
+                        (renderVideoFrame:width:height:pitch:format:)]) {
+        return;
+    }
+    [core.delegate renderVideoFrame:data
+                              width:width
+                             height:height
+                              pitch:pitch
+                             format:core->_pixelFormat];
+}
 
 static void audio_sample_callback(int16_t left, int16_t right) {}
 
@@ -117,57 +181,57 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 - (nullable instancetype)initWithCorePath:(NSString *)corePath {
     os_log_info(logger(), "[Core Alloc] Attempting to open core at path %@",
                 corePath);
-    coreHandle = dlopen(corePath.UTF8String, RTLD_LAZY);
-    if (!coreHandle) {
+    _coreHandle = dlopen(corePath.UTF8String, RTLD_LAZY);
+    if (!_coreHandle) {
         os_log_fault(logger(), "[Core Alloc] Failed to open core: %s",
                      dlerror());
         return nil;
     }
 
     // Callback setters
-    retro_set_environment = dlsym(coreHandle, "retro_set_environment");
-    retro_set_video_refresh = dlsym(coreHandle, "retro_set_video_refresh");
-    retro_set_audio_sample = dlsym(coreHandle, "retro_set_audio_sample");
+    retro_set_environment = dlsym(_coreHandle, "retro_set_environment");
+    retro_set_video_refresh = dlsym(_coreHandle, "retro_set_video_refresh");
+    retro_set_audio_sample = dlsym(_coreHandle, "retro_set_audio_sample");
     retro_set_audio_sample_batch =
-        dlsym(coreHandle, "retro_set_audio_sample_batch");
-    retro_set_input_poll = dlsym(coreHandle, "retro_set_input_poll");
-    retro_set_input_state = dlsym(coreHandle, "retro_set_input_state");
+        dlsym(_coreHandle, "retro_set_audio_sample_batch");
+    retro_set_input_poll = dlsym(_coreHandle, "retro_set_input_poll");
+    retro_set_input_state = dlsym(_coreHandle, "retro_set_input_state");
 
     // init/deinit
-    retro_init = dlsym(coreHandle, "retro_init");
-    retro_deinit = dlsym(coreHandle, "retro_deinit");
+    retro_init = dlsym(_coreHandle, "retro_init");
+    retro_deinit = dlsym(_coreHandle, "retro_deinit");
 
     // info getters
-    retro_api_version = dlsym(coreHandle, "retro_api_version");
-    retro_get_system_info = dlsym(coreHandle, "retro_get_system_info");
-    retro_get_system_av_info = dlsym(coreHandle, "retro_get_system_av_info");
+    retro_api_version = dlsym(_coreHandle, "retro_api_version");
+    retro_get_system_info = dlsym(_coreHandle, "retro_get_system_info");
+    retro_get_system_av_info = dlsym(_coreHandle, "retro_get_system_av_info");
 
     // controller
     retro_set_controller_port_device =
-        dlsym(coreHandle, "retro_set_controller_port_device");
+        dlsym(_coreHandle, "retro_set_controller_port_device");
 
     // reset/run
-    retro_reset = dlsym(coreHandle, "retro_reset");
-    retro_run = dlsym(coreHandle, "retro_run");
+    retro_reset = dlsym(_coreHandle, "retro_reset");
+    retro_run = dlsym(_coreHandle, "retro_run");
 
     // serialization
-    retro_serialize_size = dlsym(coreHandle, "retro_serialize_size");
-    retro_serialize = dlsym(coreHandle, "retro_serialize");
-    retro_unserialize = dlsym(coreHandle, "retro_unserialize");
+    retro_serialize_size = dlsym(_coreHandle, "retro_serialize_size");
+    retro_serialize = dlsym(_coreHandle, "retro_serialize");
+    retro_unserialize = dlsym(_coreHandle, "retro_unserialize");
 
     // cheats
-    retro_cheat_reset = dlsym(coreHandle, "retro_cheat_reset");
-    retro_cheat_set = dlsym(coreHandle, "retro_cheat_set");
+    retro_cheat_reset = dlsym(_coreHandle, "retro_cheat_reset");
+    retro_cheat_set = dlsym(_coreHandle, "retro_cheat_set");
 
     // game loading
-    retro_load_game = dlsym(coreHandle, "retro_load_game");
-    retro_load_game_special = dlsym(coreHandle, "retro_load_game_special");
-    retro_unload_game = dlsym(coreHandle, "retro_unload_game");
-    retro_get_region = dlsym(coreHandle, "retro_get_region");
+    retro_load_game = dlsym(_coreHandle, "retro_load_game");
+    retro_load_game_special = dlsym(_coreHandle, "retro_load_game_special");
+    retro_unload_game = dlsym(_coreHandle, "retro_unload_game");
+    retro_get_region = dlsym(_coreHandle, "retro_get_region");
 
     // memory
-    retro_get_memory_data = dlsym(coreHandle, "retro_get_memory_data");
-    retro_get_memory_size = dlsym(coreHandle, "retro_get_memory_size");
+    retro_get_memory_data = dlsym(_coreHandle, "retro_get_memory_data");
+    retro_get_memory_size = dlsym(_coreHandle, "retro_get_memory_size");
 
     // TODO: Check for all functions somehow
     if (!retro_init || !retro_load_game || !retro_run) {
@@ -179,17 +243,17 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 }
 
 - (void)dealloc {
-    if (isActive) {
+    if (_isActive) {
         [self unload];
     }
-    if (coreHandle) {
-        dlclose(coreHandle);
+    if (_coreHandle) {
+        dlclose(_coreHandle);
     }
     os_log_debug(logger(), "[Core Dealloc] Finished deallocating core.");
 }
 
 - (BOOL)load {
-    if (current_loaded_core != nil) {
+    if (g_current_loaded_core != nil) {
         os_log_error(logger(),
                      "[LoadCore] Another core instance is already active.");
         return NO;
@@ -212,8 +276,8 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 
     // Make sure the static callbacks can reference this instance before
     // installing them.
-    current_loaded_core = self;
-    isActive = true;
+    g_current_loaded_core = self;
+    _isActive = true;
 
     retro_set_environment(environment_callback);
     retro_set_video_refresh(video_refresh_callback);
@@ -230,7 +294,7 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 }
 
 - (void)unload {
-    if (!isActive) {
+    if (!_isActive) {
         os_log_error(
             logger(),
             "[UnloadCore] Attempted to unload an already unloaded core.");
@@ -243,14 +307,14 @@ static int16_t input_state_callback(unsigned port, unsigned device,
         retro_deinit();
     }
 
-    isActive = false;
-    current_loaded_core = nil;
+    _isActive = false;
+    g_current_loaded_core = nil;
     os_log_info(logger(), "[UnloadCore] Successfully unloaded core: %s",
                 systemInfo.library_name);
 }
 
 - (void)runFrame {
-    if (!isActive) {
+    if (!_isActive) {
         os_log_error(logger(), "[RunFrame] Attempted to run an unloaded core.");
         return;
     }
