@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C9A879C52DA7527C00AAE9BB /* LibretroBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */; };
 		C9A879C62DA7527C00AAE9BB /* LibretroBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9A879EF2DA76E7A00AAE9BB /* LibretroBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -440,6 +441,7 @@
 		C9A878742DA552D800AAE9BB /* Makefile.test */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.test; sourceTree = "<group>"; };
 		C9A879882DA61A9E00AAE9BB /* SwiftRetro CLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "SwiftRetro CLI"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LibretroBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9A879DA2DA76DF400AAE9BB /* SwiftRetroMacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftRetroMacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -488,11 +490,24 @@
 			);
 			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
 		};
+		C9DD7EDD2DA7771700698CE9 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetroMacOS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ContentView.swift,
+				GameViewModel.swift,
+				SwiftRetroMacOSApp.swift,
+			);
+			target = C9A879D92DA76DF400AAE9BB /* SwiftRetroMacOS */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 		C9A879992DA61BA900AAE9BB /* Exceptions for "Resources" folder in "Copy Files" phase from "SwiftRetro CLI" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				Cores/2048_libretro.dylib = (CodeSignOnCopy, );
+				Cores/mgba_libretro.dylib = (CodeSignOnCopy, );
+			};
 			buildPhase = C9A879862DA61A9E00AAE9BB /* CopyFiles */;
 			membershipExceptions = (
 				Cores/2048_libretro.dylib,
@@ -509,6 +524,14 @@
 				Cores/2048_libretro_ios.dylib,
 			);
 		};
+		C9A879EE2DA76E2500AAE9BB /* Exceptions for "Resources" folder in "Copy Bundle Resources" phase from "SwiftRetroMacOS" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = C9A879D82DA76DF400AAE9BB /* Resources */;
+			membershipExceptions = (
+				Cores/2048_libretro.dylib,
+				Cores/mgba_libretro.dylib,
+			);
+		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -523,6 +546,7 @@
 				C9A879CC2DA7556D00AAE9BB /* Exceptions for "Resources" folder in "SwiftRetro iOS" target */,
 				C9A879D42DA76BC400AAE9BB /* Exceptions for "Resources" folder in "Embed Frameworks" phase from "SwiftRetro iOS" target */,
 				C9A879992DA61BA900AAE9BB /* Exceptions for "Resources" folder in "Copy Files" phase from "SwiftRetro CLI" target */,
+				C9A879EE2DA76E2500AAE9BB /* Exceptions for "Resources" folder in "Copy Bundle Resources" phase from "SwiftRetroMacOS" target */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -548,6 +572,9 @@
 		};
 		C9A879D52DA76D6E00AAE9BB /* SwiftRetroMacOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C9DD7EDD2DA7771700698CE9 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetroMacOS" target */,
+			);
 			path = SwiftRetroMacOS;
 			sourceTree = "<group>";
 		};
@@ -576,6 +603,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9A879D72DA76DF400AAE9BB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C9A879EF2DA76E7A00AAE9BB /* LibretroBridge.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -599,6 +634,7 @@
 				C9A8766D2DA5525E00AAE9BB /* SwiftRetro iOS.app */,
 				C9A879882DA61A9E00AAE9BB /* SwiftRetro CLI */,
 				C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */,
+				C9A879DA2DA76DF400AAE9BB /* SwiftRetroMacOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1994,6 +2030,25 @@
 			productReference = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		C9A879D92DA76DF400AAE9BB /* SwiftRetroMacOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9A879E32DA76DF500AAE9BB /* Build configuration list for PBXNativeTarget "SwiftRetroMacOS" */;
+			buildPhases = (
+				C9A879D62DA76DF400AAE9BB /* Sources */,
+				C9A879D72DA76DF400AAE9BB /* Frameworks */,
+				C9A879D82DA76DF400AAE9BB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftRetroMacOS;
+			packageProductDependencies = (
+			);
+			productName = SwiftRetroMacOS;
+			productReference = C9A879DA2DA76DF400AAE9BB /* SwiftRetroMacOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -2012,6 +2067,9 @@
 						CreatedOnToolsVersion = 16.3;
 					};
 					C9A879B42DA751B200AAE9BB = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					C9A879D92DA76DF400AAE9BB = {
 						CreatedOnToolsVersion = 16.3;
 					};
 				};
@@ -2033,12 +2091,20 @@
 				C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */,
 				C9A879872DA61A9E00AAE9BB /* SwiftRetro CLI */,
 				C9A879B42DA751B200AAE9BB /* LibretroBridge */,
+				C9A879D92DA76DF400AAE9BB /* SwiftRetroMacOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C9A879B32DA751B200AAE9BB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9A879D82DA76DF400AAE9BB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2063,6 +2129,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C9A879B12DA751B200AAE9BB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9A879D62DA76DF400AAE9BB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2399,6 +2472,62 @@
 			};
 			name = Release;
 		};
+		C9A879E42DA76DF500AAE9BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SwiftRetroMacOS/SwiftRetroMacOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mbh.SwiftRetroMacOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "LibretroBridge/SwiftRetro-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C9A879E52DA76DF500AAE9BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SwiftRetroMacOS/SwiftRetroMacOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mbh.SwiftRetroMacOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "LibretroBridge/SwiftRetro-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2434,6 +2563,15 @@
 			buildConfigurations = (
 				C9A879BC2DA751B200AAE9BB /* Debug */,
 				C9A879BD2DA751B200AAE9BB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9A879E32DA76DF500AAE9BB /* Build configuration list for PBXNativeTarget "SwiftRetroMacOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9A879E42DA76DF500AAE9BB /* Debug */,
+				C9A879E52DA76DF500AAE9BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
