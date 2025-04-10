@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol LibretroCoreDelegate <NSObject>
 - (void)renderVideoFrame:(const void *)data width:(unsigned)width height:(unsigned)height pitch:(size_t)pitch format:(enum retro_pixel_format)format;
 - (void)playAudioSamples:(const int16_t *)data frames:(size_t)frames;
-- (int16_t)getInputStateForPort:(unsigned)port device:(unsigned)device index:(unsigned)index id:(unsigned)id;
+- (int16_t)getInputState:(unsigned)port device:(unsigned)device index:(unsigned)index id:(unsigned)id;
 - (void)pollInput;
 // ... other delegate methods for environment calls, logging etc.
 @end
