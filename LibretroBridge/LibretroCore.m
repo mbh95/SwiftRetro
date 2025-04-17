@@ -365,8 +365,11 @@ static int16_t input_state_callback(unsigned port, unsigned device,
                 systemInfo.library_name);
 }
 
+- (BOOL)loadGame:(NSString *)gamePath {
+    return NO;
+}
+
 - (void)unloadGame {
-    
 }
 
 - (void)runFrame {
