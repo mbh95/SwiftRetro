@@ -1,9 +1,6 @@
 [submodule "libretro-common"]
 	path = libretro-common
 	url = git@github.com:libretro/libretro-common.git
-[submodule "Cores/mgba"]
-	path = Cores/mgba
-	url = git@github.com:mbh95/libretro-mgba.git
 [submodule "Cores/2048"]
 	path = Cores/libretro-2048
 	url = git@github.com:mbh95/libretro-2048.git
