@@ -48,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		C9338E9C2DB0A0A300435074 /* libretro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libretro.h; sourceTree = "<group>"; };
+		C933A4E72DB0A93E00435074 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		C9A8766D2DA5525E00AAE9BB /* SwiftRetro iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftRetro iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A8767C2DA552D800AAE9BB /* float_to_s16.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = float_to_s16.c; sourceTree = "<group>"; };
 		C9A8767D2DA552D800AAE9BB /* float_to_s16_neon.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = float_to_s16_neon.c; sourceTree = "<group>"; };
@@ -449,9 +450,21 @@
 		C9338E992DB09F3D00435074 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetro iOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"Bundled Cores/2048_libretro.dylib",
+				"Bundled Cores/mgba_libretro.dylib",
 				ContentView.swift,
 				GameViewModel.swift,
 				SwiftRetroMacOSApp.swift,
+			);
+			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
+		};
+		C933A4EA2DB0A9B900435074 /* Exceptions for "SwiftRetro" folder in "SwiftRetro iOS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Bundled Cores/2048_libretro_ios_simulator.dylib",
+				"Bundled Cores/2048_libretro_ios.dylib",
+				"Bundled Cores/mgba_libretro_ios_simulator.dylib",
+				"Bundled Cores/mgba_libretro_ios.dylib",
 			);
 			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
 		};
@@ -488,6 +501,43 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		C933A4EC2DB0A9CB00435074 /* Exceptions for "SwiftRetroMacOS" folder in "Copy Files" phase from "SwiftRetro CLI" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				"Bundled Cores/2048_libretro.dylib" = (CodeSignOnCopy, );
+			};
+			buildPhase = C9A879862DA61A9E00AAE9BB /* CopyFiles */;
+			membershipExceptions = (
+				"Bundled Cores/2048_libretro.dylib",
+			);
+		};
+		C933A4F52DB0AA1000435074 /* Exceptions for "SwiftRetro" folder in "Embed Frameworks" phase from "SwiftRetro iOS" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				"Bundled Cores/2048_libretro_ios.dylib" = (CodeSignOnCopy, );
+				"Bundled Cores/2048_libretro_ios_simulator.dylib" = (CodeSignOnCopy, );
+				"Bundled Cores/mgba_libretro_ios.dylib" = (CodeSignOnCopy, );
+				"Bundled Cores/mgba_libretro_ios_simulator.dylib" = (CodeSignOnCopy, );
+			};
+			buildPhase = C9A879C92DA7527C00AAE9BB /* Embed Frameworks */;
+			membershipExceptions = (
+				"Bundled Cores/2048_libretro_ios_simulator.dylib",
+				"Bundled Cores/2048_libretro_ios.dylib",
+				"Bundled Cores/mgba_libretro_ios_simulator.dylib",
+				"Bundled Cores/mgba_libretro_ios.dylib",
+			);
+		};
+		C933A4F82DB0AA1C00435074 /* Exceptions for "SwiftRetroMacOS" folder in "Copy Bundle Resources" phase from "SwiftRetroMacOS" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = C9A879D82DA76DF400AAE9BB /* Resources */;
+			membershipExceptions = (
+				"Bundled Cores/2048_libretro.dylib",
+				"Bundled Cores/mgba_libretro.dylib",
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C9338E742DB09D1800435074 /* Cores */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -496,6 +546,10 @@
 		};
 		C9A8766F2DA5525E00AAE9BB /* SwiftRetro */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C933A4EA2DB0A9B900435074 /* Exceptions for "SwiftRetro" folder in "SwiftRetro iOS" target */,
+				C933A4F52DB0AA1000435074 /* Exceptions for "SwiftRetro" folder in "Embed Frameworks" phase from "SwiftRetro iOS" target */,
+			);
 			path = SwiftRetro;
 			sourceTree = "<group>";
 		};
@@ -520,7 +574,9 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				C9338E992DB09F3D00435074 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetro iOS" target */,
+				C933A4EC2DB0A9CB00435074 /* Exceptions for "SwiftRetroMacOS" folder in "Copy Files" phase from "SwiftRetro CLI" target */,
 				C9DD7EDD2DA7771700698CE9 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetroMacOS" target */,
+				C933A4F82DB0AA1C00435074 /* Exceptions for "SwiftRetroMacOS" folder in "Copy Bundle Resources" phase from "SwiftRetroMacOS" target */,
 			);
 			path = SwiftRetroMacOS;
 			sourceTree = "<group>";
@@ -565,6 +621,7 @@
 		C9A876642DA5525E00AAE9BB = {
 			isa = PBXGroup;
 			children = (
+				C933A4E72DB0A93E00435074 /* .gitignore */,
 				C9A8766F2DA5525E00AAE9BB /* SwiftRetro */,
 				C9A879D52DA76D6E00AAE9BB /* SwiftRetroMacOS */,
 				C9A8799F2DA6317C00AAE9BB /* SwiftRetroCLI */,
@@ -2313,6 +2370,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwiftRetroCLI",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2325,6 +2386,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwiftRetroCLI",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
