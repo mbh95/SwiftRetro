@@ -365,6 +365,10 @@ static int16_t input_state_callback(unsigned port, unsigned device,
                 systemInfo.library_name);
 }
 
+- (void)unloadGame {
+    
+}
+
 - (void)runFrame {
     if (!_isActive) {
         os_log_error(logger(), "[RunFrame] Attempted to run an unloaded core.");
