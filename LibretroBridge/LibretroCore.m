@@ -27,6 +27,7 @@ static os_log_t logger(void) {
     bool _isActive;
 
     bool _supportNoGame;
+    bool _gameLoaded;
     enum retro_pixel_format _pixelFormat;
 
     // Handle for the dynamic library
@@ -370,6 +371,10 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 }
 
 - (void)unloadGame {
+}
+
+- (BOOL)canStart {
+    return _supportNoGame || _gameLoaded;
 }
 
 - (void)runFrame {

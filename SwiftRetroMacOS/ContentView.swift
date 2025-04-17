@@ -40,6 +40,10 @@ struct ContentView: View {
                     viewModel.unload()
                 }
                 .disabled(viewModel.coreIsLoaded == false) // Example: Disable if no core loaded
+                Button("Start") {
+                    viewModel.startCore()
+                }
+                .disabled(viewModel.canStart() == false)
             }
             .padding()
         }
