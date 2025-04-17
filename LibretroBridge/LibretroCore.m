@@ -6,6 +6,7 @@
 //
 
 #import "LibretroCore.h"
+#import "CoreOption.h"
 #import "libretro.h"
 #import <dlfcn.h> // For dlopen, dlsym, dlclose
 #import <os/log.h>
@@ -129,6 +130,55 @@ static bool environment_callback(unsigned cmd, void *data) {
                      "[Environment] Unsupported pixel format requested: %d",
                      *format);
         return false;
+    }
+    case RETRO_ENVIRONMENT_GET_VARIABLE: { // 15
+        if (data == NULL) {
+            return true;
+        }
+        struct retro_variable *var = (struct retro_variable *)data;
+        NSString *key = [NSString stringWithUTF8String:var->key];
+        CoreOption *option = core.coreOptions[key];
+        if (option) {
+            os_log_debug(
+                logger(),
+                "[Environment] Get variable '%@': Found current value '%@'",
+                key, option.currentValue);
+            var->value = option.currentValue.UTF8String;
+        } else {
+            os_log_debug(logger(), "[Environment] Get variable '%@': Not found",
+                         key);
+            var->value = NULL;
+        }
+        return true;
+    }
+    case RETRO_ENVIRONMENT_SET_VARIABLES: { // 16
+        if (data == NULL) {
+            return true;
+        }
+        const struct retro_variable *vars = (const struct retro_variable *)data;
+        os_log_debug(logger(), "[Environment] Core setting variables.");
+
+        // TODO: Handle core redefining existing options.
+        [core.coreOptions removeAllObjects];
+        for (const struct retro_variable *var = vars; var->key != NULL; var++) {
+            NSString *key = [NSString stringWithUTF8String:var->key];
+            NSString *valueString = [NSString stringWithUTF8String:var->value];
+            CoreOption *newOption =
+                [[CoreOption alloc] initWithKey:key valueString:valueString];
+            core.coreOptions[key] = newOption;
+            os_log_info(logger(), "[Evironment] Initialized variable: %@",
+                        newOption);
+        }
+        return true;
+    }
+    case RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE: { // 17
+        os_log_debug(logger(), "[Environment] Core options updated? %@",
+                     core.optionsUpdated ? @"YES" : @"NO");
+        if (data != NULL) {
+            *(bool *)data = core.optionsUpdated;
+        }
+        core.optionsUpdated = NO;
+        return true;
     }
     case RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME: { // 18
         os_log_debug(logger(),
@@ -272,10 +322,12 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     os_log_info(logger(), "[LoadCore] Initializing core: %s",
                 systemInfo.library_name);
 
-    // TODO: initialize state used by static callbacks.
+    // Initialize state used by static callbacks.
+    self.coreOptions = [NSMutableDictionary dictionary];
+    self.optionsUpdated = NO;
 
-    // Make sure the static callbacks can reference this instance before
-    // installing them.
+    // Make sure the static callbacks can reference this instance before`
+    // installing them.`
     g_current_loaded_core = self;
     _isActive = true;
 
@@ -320,6 +372,16 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     }
     if (retro_run) {
         retro_run();
+    }
+}
+
+- (void)setCoreOptionValue:(NSString *)value forKey:(NSString *)key {
+    CoreOption *option = self.coreOptions[key];
+    if (option && ![option.currentValue isEqualToString:value]) {
+        option.currentValue = value;
+        self.optionsUpdated = YES; // Set the flag when a value changes!
+        os_log_debug(logger(), "[CoreOption] Updated '%@' to '%@'. Flag set.",
+                     key, value);
     }
 }
 
