@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C9338E9E2DB0A14800435074 /* LibretroBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */; };
 		C9A879C52DA7527C00AAE9BB /* LibretroBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */; };
 		C9A879C62DA7527C00AAE9BB /* LibretroBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C9A879EF2DA76E7A00AAE9BB /* LibretroBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */; };
@@ -46,6 +47,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C9338E9C2DB0A0A300435074 /* libretro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libretro.h; sourceTree = "<group>"; };
 		C9A8766D2DA5525E00AAE9BB /* SwiftRetro iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftRetro iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A8767C2DA552D800AAE9BB /* float_to_s16.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = float_to_s16.c; sourceTree = "<group>"; };
 		C9A8767D2DA552D800AAE9BB /* float_to_s16_neon.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = float_to_s16_neon.c; sourceTree = "<group>"; };
@@ -57,38 +59,38 @@
 		C9A876832DA552D800AAE9BB /* stereo_to_mono_float.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = stereo_to_mono_float.c; sourceTree = "<group>"; };
 		C9A876852DA552D800AAE9BB /* fft.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
 		C9A876862DA552D800AAE9BB /* fft.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fft.c; sourceTree = "<group>"; };
-		C9A876882DA552D800AAE9BB /* BassBoost.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = BassBoost.dsp; sourceTree = "<group>"; };
-		C9A876892DA552D800AAE9BB /* ChipTune-Lowpass.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ChipTune-Lowpass.dsp"; sourceTree = "<group>"; };
-		C9A8768A2DA552D800AAE9BB /* ChipTuneEnhance.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = ChipTuneEnhance.dsp; sourceTree = "<group>"; };
+		C9A876882DA552D800AAE9BB /* BassBoost.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = BassBoost.dsp; sourceTree = "<group>"; };
+		C9A876892DA552D800AAE9BB /* ChipTune-Lowpass.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ChipTune-Lowpass.dsp"; sourceTree = "<group>"; };
+		C9A8768A2DA552D800AAE9BB /* ChipTuneEnhance.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = ChipTuneEnhance.dsp; sourceTree = "<group>"; };
 		C9A8768B2DA552D800AAE9BB /* chorus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = chorus.c; sourceTree = "<group>"; };
-		C9A8768C2DA552D800AAE9BB /* Chorus.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Chorus.dsp; sourceTree = "<group>"; };
-		C9A8768D2DA552D800AAE9BB /* configure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = configure; sourceTree = "<group>"; };
+		C9A8768C2DA552D800AAE9BB /* Chorus.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Chorus.dsp; sourceTree = "<group>"; };
+		C9A8768D2DA552D800AAE9BB /* configure */ = {isa = PBXFileReference; lastKnownFileType = text; path = configure; sourceTree = "<group>"; };
 		C9A8768E2DA552D800AAE9BB /* crystalizer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crystalizer.c; sourceTree = "<group>"; };
-		C9A8768F2DA552D800AAE9BB /* Crystalizer.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Crystalizer.dsp; sourceTree = "<group>"; };
+		C9A8768F2DA552D800AAE9BB /* Crystalizer.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Crystalizer.dsp; sourceTree = "<group>"; };
 		C9A876902DA552D800AAE9BB /* echo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = echo.c; sourceTree = "<group>"; };
-		C9A876912DA552D800AAE9BB /* Echo.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Echo.dsp; sourceTree = "<group>"; };
-		C9A876922DA552D800AAE9BB /* EchoReverb.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = EchoReverb.dsp; sourceTree = "<group>"; };
+		C9A876912DA552D800AAE9BB /* Echo.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Echo.dsp; sourceTree = "<group>"; };
+		C9A876922DA552D800AAE9BB /* EchoReverb.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = EchoReverb.dsp; sourceTree = "<group>"; };
 		C9A876932DA552D800AAE9BB /* eq.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = eq.c; sourceTree = "<group>"; };
-		C9A876942DA552D800AAE9BB /* EQ.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = EQ.dsp; sourceTree = "<group>"; };
-		C9A876952DA552D800AAE9BB /* HighShelfDampen.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = HighShelfDampen.dsp; sourceTree = "<group>"; };
+		C9A876942DA552D800AAE9BB /* EQ.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = EQ.dsp; sourceTree = "<group>"; };
+		C9A876952DA552D800AAE9BB /* HighShelfDampen.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = HighShelfDampen.dsp; sourceTree = "<group>"; };
 		C9A876962DA552D800AAE9BB /* iir.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = iir.c; sourceTree = "<group>"; };
-		C9A876972DA552D800AAE9BB /* IIR.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = IIR.dsp; sourceTree = "<group>"; };
-		C9A876982DA552D800AAE9BB /* link.T */ = {isa = PBXFileReference; lastKnownFileType = text; path = link.T; sourceTree = "<group>"; };
-		C9A876992DA552D800AAE9BB /* LowPassCPS.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = LowPassCPS.dsp; sourceTree = "<group>"; };
-		C9A8769A2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		C9A8769B2DA552D800AAE9BB /* Mono.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mono.dsp; sourceTree = "<group>"; };
+		C9A876972DA552D800AAE9BB /* IIR.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = IIR.dsp; sourceTree = "<group>"; };
+		C9A876982DA552D800AAE9BB /* link.T */ = {isa = PBXFileReference; lastKnownFileType = file; path = link.T; sourceTree = "<group>"; };
+		C9A876992DA552D800AAE9BB /* LowPassCPS.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = LowPassCPS.dsp; sourceTree = "<group>"; };
+		C9A8769A2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
+		C9A8769B2DA552D800AAE9BB /* Mono.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Mono.dsp; sourceTree = "<group>"; };
 		C9A8769C2DA552D800AAE9BB /* panning.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = panning.c; sourceTree = "<group>"; };
-		C9A8769D2DA552D800AAE9BB /* Panning.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Panning.dsp; sourceTree = "<group>"; };
+		C9A8769D2DA552D800AAE9BB /* Panning.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Panning.dsp; sourceTree = "<group>"; };
 		C9A8769E2DA552D800AAE9BB /* phaser.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = phaser.c; sourceTree = "<group>"; };
-		C9A8769F2DA552D800AAE9BB /* Phaser.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Phaser.dsp; sourceTree = "<group>"; };
+		C9A8769F2DA552D800AAE9BB /* Phaser.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Phaser.dsp; sourceTree = "<group>"; };
 		C9A876A02DA552D800AAE9BB /* reverb.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = reverb.c; sourceTree = "<group>"; };
-		C9A876A12DA552D800AAE9BB /* Reverb.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Reverb.dsp; sourceTree = "<group>"; };
+		C9A876A12DA552D800AAE9BB /* Reverb.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Reverb.dsp; sourceTree = "<group>"; };
 		C9A876A22DA552D800AAE9BB /* tremolo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = tremolo.c; sourceTree = "<group>"; };
-		C9A876A32DA552D800AAE9BB /* Tremolo.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tremolo.dsp; sourceTree = "<group>"; };
+		C9A876A32DA552D800AAE9BB /* Tremolo.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tremolo.dsp; sourceTree = "<group>"; };
 		C9A876A42DA552D800AAE9BB /* vibrato.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vibrato.c; sourceTree = "<group>"; };
-		C9A876A52DA552D800AAE9BB /* Vibrato.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Vibrato.dsp; sourceTree = "<group>"; };
+		C9A876A52DA552D800AAE9BB /* Vibrato.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = Vibrato.dsp; sourceTree = "<group>"; };
 		C9A876A62DA552D800AAE9BB /* wahwah.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = wahwah.c; sourceTree = "<group>"; };
-		C9A876A72DA552D800AAE9BB /* WahWah.dsp */ = {isa = PBXFileReference; lastKnownFileType = text; path = WahWah.dsp; sourceTree = "<group>"; };
+		C9A876A72DA552D800AAE9BB /* WahWah.dsp */ = {isa = PBXFileReference; lastKnownFileType = file; path = WahWah.dsp; sourceTree = "<group>"; };
 		C9A876A92DA552D800AAE9BB /* nearest_resampler.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nearest_resampler.c; sourceTree = "<group>"; };
 		C9A876AA2DA552D800AAE9BB /* sinc_resampler.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sinc_resampler.c; sourceTree = "<group>"; };
 		C9A876AB2DA552D800AAE9BB /* sinc_resampler_neon.S */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = sinc_resampler_neon.S; sourceTree = "<group>"; };
@@ -148,7 +150,7 @@
 		C9A876F42DA552D800AAE9BB /* rpng_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rpng_internal.h; sourceTree = "<group>"; };
 		C9A876F62DA552D800AAE9BB /* rtga.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rtga.c; sourceTree = "<group>"; };
 		C9A876F82DA552D800AAE9BB /* rwav.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rwav.c; sourceTree = "<group>"; };
-		C9A876FA2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A876FA2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A876FB2DA552D800AAE9BB /* rxml_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rxml_test.c; sourceTree = "<group>"; };
 		C9A876FD2DA552D800AAE9BB /* rxml.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rxml.c; sourceTree = "<group>"; };
 		C9A876FF2DA552D800AAE9BB /* image_texture.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = image_texture.c; sourceTree = "<group>"; };
@@ -180,7 +182,7 @@
 		C9A877222DA552D800AAE9BB /* cdrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cdrom.h; sourceTree = "<group>"; };
 		C9A877242DA552D800AAE9BB /* stdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stdint.h; sourceTree = "<group>"; };
 		C9A877262DA552D800AAE9BB /* zconf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
-		C9A877272DA552D800AAE9BB /* zconf.h.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = zconf.h.in; sourceTree = "<group>"; };
+		C9A877272DA552D800AAE9BB /* zconf.h.in */ = {isa = PBXFileReference; lastKnownFileType = file; path = zconf.h.in; sourceTree = "<group>"; };
 		C9A877282DA552D800AAE9BB /* zlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		C9A877292DA552D800AAE9BB /* zutil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zutil.h; sourceTree = "<group>"; };
 		C9A8772B2DA552D800AAE9BB /* apple_compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = apple_compat.h; sourceTree = "<group>"; };
@@ -194,7 +196,7 @@
 		C9A877332DA552D800AAE9BB /* strcasestr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = strcasestr.h; sourceTree = "<group>"; };
 		C9A877342DA552D800AAE9BB /* strl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = strl.h; sourceTree = "<group>"; };
 		C9A877352DA552D800AAE9BB /* zconf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
-		C9A877362DA552D800AAE9BB /* zconf.h.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = zconf.h.in; sourceTree = "<group>"; };
+		C9A877362DA552D800AAE9BB /* zconf.h.in */ = {isa = PBXFileReference; lastKnownFileType = file; path = zconf.h.in; sourceTree = "<group>"; };
 		C9A877372DA552D800AAE9BB /* zlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		C9A877382DA552D800AAE9BB /* zutil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zutil.h; sourceTree = "<group>"; };
 		C9A8773A2DA552D800AAE9BB /* cocoa_defines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cocoa_defines.h; sourceTree = "<group>"; };
@@ -301,7 +303,6 @@
 		C9A877B92DA552D800AAE9BB /* fastcpy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fastcpy.h; sourceTree = "<group>"; };
 		C9A877BA2DA552D800AAE9BB /* filters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = filters.h; sourceTree = "<group>"; };
 		C9A877BB2DA552D800AAE9BB /* libco.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libco.h; sourceTree = "<group>"; };
-		C9A877BC2DA552D800AAE9BB /* libretro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libretro.h; sourceTree = "<group>"; };
 		C9A877BD2DA552D800AAE9BB /* libretro_d3d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libretro_d3d.h; sourceTree = "<group>"; };
 		C9A877BE2DA552D800AAE9BB /* libretro_dspfilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libretro_dspfilter.h; sourceTree = "<group>"; };
 		C9A877BF2DA552D800AAE9BB /* libretro_gskit_ps2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libretro_gskit_ps2.h; sourceTree = "<group>"; };
@@ -364,10 +365,10 @@
 		C9A878002DA552D800AAE9BB /* wiiu_pthread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wiiu_pthread.h; sourceTree = "<group>"; };
 		C9A878012DA552D800AAE9BB /* xenon_sdl_threads.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = xenon_sdl_threads.c; sourceTree = "<group>"; };
 		C9A878032DA552D800AAE9BB /* compat_fnmatch_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compat_fnmatch_test.c; sourceTree = "<group>"; };
-		C9A878042DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		C9A878062DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A878042DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
+		C9A878062DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A878072DA552D800AAE9BB /* snprintf_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = snprintf_test.c; sourceTree = "<group>"; };
-		C9A878092DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A878092DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A8780A2DA552D800AAE9BB /* strl_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = strl_test.c; sourceTree = "<group>"; };
 		C9A8780D2DA552D800AAE9BB /* core_option_regex.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = core_option_regex.py; sourceTree = "<group>"; };
 		C9A8780E2DA552D800AAE9BB /* v1_to_v2_converter.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = v1_to_v2_converter.py; sourceTree = "<group>"; };
@@ -391,24 +392,24 @@
 		C9A878282DA552D800AAE9BB /* libretro_core_options_intl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libretro_core_options_intl.h; sourceTree = "<group>"; };
 		C9A8782A2DA552D800AAE9BB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C9A8782C2DA552D800AAE9BB /* config_file_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = config_file_test.c; sourceTree = "<group>"; };
-		C9A8782D2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		C9A8782F2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A8782D2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
+		C9A8782F2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A878302DA552D800AAE9BB /* nbio_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nbio_test.c; sourceTree = "<group>"; };
-		C9A878332DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A878332DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A878342DA552D800AAE9BB /* rpng_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rpng_test.c; sourceTree = "<group>"; };
-		C9A878362DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A878362DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A878372DA552D800AAE9BB /* rxml_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rxml_test.c; sourceTree = "<group>"; };
-		C9A8783A2DA552D800AAE9BB /* http_test */ = {isa = PBXFileReference; lastKnownFileType = file; path = http_test; sourceTree = "<group>"; };
-		C9A8783B2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A8783A2DA552D800AAE9BB /* http_test */ = {isa = PBXFileReference; lastKnownFileType = text; path = http_test; sourceTree = "<group>"; };
+		C9A8783B2DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A8783C2DA552D800AAE9BB /* net_http_parse_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = net_http_parse_test.c; sourceTree = "<group>"; };
 		C9A8783D2DA552D800AAE9BB /* net_http_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = net_http_test.c; sourceTree = "<group>"; };
-		C9A8783E2DA552D800AAE9BB /* net_ifinfo */ = {isa = PBXFileReference; lastKnownFileType = file; path = net_ifinfo; sourceTree = "<group>"; };
+		C9A8783E2DA552D800AAE9BB /* net_ifinfo */ = {isa = PBXFileReference; lastKnownFileType = text; path = net_ifinfo; sourceTree = "<group>"; };
 		C9A8783F2DA552D800AAE9BB /* net_ifinfo_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = net_ifinfo_test.c; sourceTree = "<group>"; };
 		C9A878402DA552D800AAE9BB /* udp-test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "udp-test.c"; sourceTree = "<group>"; };
-		C9A878422DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A878422DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A878432DA552D800AAE9BB /* rzip.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rzip.c; sourceTree = "<group>"; };
 		C9A878462DA552D800AAE9BB /* crc32.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crc32.c; sourceTree = "<group>"; };
-		C9A878472DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		C9A878472DA552D800AAE9BB /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile; sourceTree = "<group>"; };
 		C9A878482DA552D800AAE9BB /* md5_test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = md5_test.c; sourceTree = "<group>"; };
 		C9A878492DA552D800AAE9BB /* sha1_main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sha1_main.c; sourceTree = "<group>"; };
 		C9A8784C2DA552D800AAE9BB /* chd_stream.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = chd_stream.c; sourceTree = "<group>"; };
@@ -438,13 +439,22 @@
 		C9A8786F2DA552D800AAE9BB /* vfs_implementation_uwp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = vfs_implementation_uwp.cpp; sourceTree = "<group>"; };
 		C9A878712DA552D800AAE9BB /* vulkan_symbol_wrapper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vulkan_symbol_wrapper.c; sourceTree = "<group>"; };
 		C9A878732DA552D800AAE9BB /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		C9A878742DA552D800AAE9BB /* Makefile.test */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.test; sourceTree = "<group>"; };
+		C9A878742DA552D800AAE9BB /* Makefile.test */ = {isa = PBXFileReference; lastKnownFileType = file; path = Makefile.test; sourceTree = "<group>"; };
 		C9A879882DA61A9E00AAE9BB /* SwiftRetro CLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "SwiftRetro CLI"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A879B52DA751B200AAE9BB /* LibretroBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LibretroBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A879DA2DA76DF400AAE9BB /* SwiftRetroMacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftRetroMacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C9338E992DB09F3D00435074 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetro iOS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ContentView.swift,
+				GameViewModel.swift,
+				SwiftRetroMacOSApp.swift,
+			);
+			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
+		};
 		C9A879A12DA6317C00AAE9BB /* Exceptions for "SwiftRetroCLI" folder in "SwiftRetro iOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -459,20 +469,6 @@
 			);
 			target = C9A879872DA61A9E00AAE9BB /* SwiftRetro CLI */;
 		};
-		C9A879BE2DA751C800AAE9BB /* Exceptions for "LibretroBridge" folder in "SwiftRetro iOS" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				LibretroCore.m,
-			);
-			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
-		};
-		C9A879BF2DA751C800AAE9BB /* Exceptions for "LibretroBridge" folder in "SwiftRetro CLI" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				LibretroCore.m,
-			);
-			target = C9A879872DA61A9E00AAE9BB /* SwiftRetro CLI */;
-		};
 		C9A879C02DA751C800AAE9BB /* Exceptions for "LibretroBridge" folder in "LibretroBridge" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
@@ -480,15 +476,6 @@
 				"SwiftRetro-Bridging-Header.h",
 			);
 			target = C9A879B42DA751B200AAE9BB /* LibretroBridge */;
-		};
-		C9A879CC2DA7556D00AAE9BB /* Exceptions for "Resources" folder in "SwiftRetro iOS" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Cores/2048_libretro_ios.dylib,
-				Cores/2048_libretro.dylib,
-				Cores/mgba_libretro.dylib,
-			);
-			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
 		};
 		C9DD7EDD2DA7771700698CE9 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetroMacOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -501,54 +488,15 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		C9A879992DA61BA900AAE9BB /* Exceptions for "Resources" folder in "Copy Files" phase from "SwiftRetro CLI" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			attributesByRelativePath = {
-				Cores/2048_libretro.dylib = (CodeSignOnCopy, );
-				Cores/mgba_libretro.dylib = (CodeSignOnCopy, );
-			};
-			buildPhase = C9A879862DA61A9E00AAE9BB /* CopyFiles */;
-			membershipExceptions = (
-				Cores/2048_libretro.dylib,
-				Cores/mgba_libretro.dylib,
-			);
-		};
-		C9A879D42DA76BC400AAE9BB /* Exceptions for "Resources" folder in "Embed Frameworks" phase from "SwiftRetro iOS" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			attributesByRelativePath = {
-				Cores/2048_libretro_ios.dylib = (CodeSignOnCopy, );
-			};
-			buildPhase = C9A879C92DA7527C00AAE9BB /* Embed Frameworks */;
-			membershipExceptions = (
-				Cores/2048_libretro_ios.dylib,
-			);
-		};
-		C9A879EE2DA76E2500AAE9BB /* Exceptions for "Resources" folder in "Copy Bundle Resources" phase from "SwiftRetroMacOS" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = C9A879D82DA76DF400AAE9BB /* Resources */;
-			membershipExceptions = (
-				Cores/2048_libretro.dylib,
-				Cores/mgba_libretro.dylib,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		C9338E742DB09D1800435074 /* Cores */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Cores;
+			sourceTree = "<group>";
+		};
 		C9A8766F2DA5525E00AAE9BB /* SwiftRetro */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SwiftRetro;
-			sourceTree = "<group>";
-		};
-		C9A879912DA61B6500AAE9BB /* Resources */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				C9A879CC2DA7556D00AAE9BB /* Exceptions for "Resources" folder in "SwiftRetro iOS" target */,
-				C9A879D42DA76BC400AAE9BB /* Exceptions for "Resources" folder in "Embed Frameworks" phase from "SwiftRetro iOS" target */,
-				C9A879992DA61BA900AAE9BB /* Exceptions for "Resources" folder in "Copy Files" phase from "SwiftRetro CLI" target */,
-				C9A879EE2DA76E2500AAE9BB /* Exceptions for "Resources" folder in "Copy Bundle Resources" phase from "SwiftRetroMacOS" target */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		C9A8799F2DA6317C00AAE9BB /* SwiftRetroCLI */ = {
@@ -563,8 +511,6 @@
 		C9A879B62DA751B200AAE9BB /* LibretroBridge */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C9A879BE2DA751C800AAE9BB /* Exceptions for "LibretroBridge" folder in "SwiftRetro iOS" target */,
-				C9A879BF2DA751C800AAE9BB /* Exceptions for "LibretroBridge" folder in "SwiftRetro CLI" target */,
 				C9A879C02DA751C800AAE9BB /* Exceptions for "LibretroBridge" folder in "LibretroBridge" target */,
 			);
 			path = LibretroBridge;
@@ -573,6 +519,7 @@
 		C9A879D52DA76D6E00AAE9BB /* SwiftRetroMacOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				C9338E992DB09F3D00435074 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetro iOS" target */,
 				C9DD7EDD2DA7771700698CE9 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetroMacOS" target */,
 			);
 			path = SwiftRetroMacOS;
@@ -593,6 +540,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9338E9E2DB0A14800435074 /* LibretroBridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,12 +565,12 @@
 		C9A876642DA5525E00AAE9BB = {
 			isa = PBXGroup;
 			children = (
-				C9A879D52DA76D6E00AAE9BB /* SwiftRetroMacOS */,
 				C9A8766F2DA5525E00AAE9BB /* SwiftRetro */,
+				C9A879D52DA76D6E00AAE9BB /* SwiftRetroMacOS */,
 				C9A8799F2DA6317C00AAE9BB /* SwiftRetroCLI */,
-				C9A879912DA61B6500AAE9BB /* Resources */,
-				C9A878752DA552D800AAE9BB /* libretro-common */,
 				C9A879B62DA751B200AAE9BB /* LibretroBridge */,
+				C9338E742DB09D1800435074 /* Cores */,
+				C9A878752DA552D800AAE9BB /* libretro-common */,
 				C9A879C42DA7527C00AAE9BB /* Frameworks */,
 				C9A8766E2DA5525E00AAE9BB /* Products */,
 			);
@@ -1411,7 +1359,6 @@
 				C9A877B92DA552D800AAE9BB /* fastcpy.h */,
 				C9A877BA2DA552D800AAE9BB /* filters.h */,
 				C9A877BB2DA552D800AAE9BB /* libco.h */,
-				C9A877BC2DA552D800AAE9BB /* libretro.h */,
 				C9A877BD2DA552D800AAE9BB /* libretro_d3d.h */,
 				C9A877BE2DA552D800AAE9BB /* libretro_dspfilter.h */,
 				C9A877BF2DA552D800AAE9BB /* libretro_gskit_ps2.h */,
@@ -1430,6 +1377,7 @@
 				C9A877CC2DA552D800AAE9BB /* retro_miscellaneous.h */,
 				C9A877CD2DA552D800AAE9BB /* retro_stat.h */,
 				C9A877CE2DA552D800AAE9BB /* retro_timers.h */,
+				C9338E9C2DB0A0A300435074 /* libretro.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -1977,7 +1925,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				C9A8766F2DA5525E00AAE9BB /* SwiftRetro */,
-				C9A879912DA61B6500AAE9BB /* Resources */,
 				C9A8799F2DA6317C00AAE9BB /* SwiftRetroCLI */,
 				C9A879D52DA76D6E00AAE9BB /* SwiftRetroMacOS */,
 			);
@@ -2369,7 +2316,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "SwiftRetro/LibretroBridge/SwiftRetro-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "LibretroBridge/SwiftRetro-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -2381,7 +2328,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "SwiftRetro/LibretroBridge/SwiftRetro-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "LibretroBridge/SwiftRetro-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
