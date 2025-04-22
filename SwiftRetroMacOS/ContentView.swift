@@ -7,6 +7,7 @@
 
 import MetalKit
 import SwiftUI
+import CoreGraphics
 
 struct ContentView: View {
     // Keep the ViewModel specific to this macOS view hierarchy
@@ -21,7 +22,7 @@ struct ContentView: View {
                 .padding(.bottom)
 
             GameRendererView(viewModel: viewModel)
-                .frame(width: 640, height: 480)  // Example size
+                .frame(width: CGFloat(viewModel.frameWidth), height: CGFloat(viewModel.frameHeight))
                 .border(Color.gray)  // So we can see its bounds
 
             HStack(spacing: 20) {
