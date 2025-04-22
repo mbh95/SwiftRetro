@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel = GameViewModel() // Create instance
 
-    let corePath = Bundle.main.privateFrameworksURL!.appendingPathComponent("mgba_libretro_ios_simulator.dylib").path
+    let corePath = Bundle.main.privateFrameworksURL!.appendingPathComponent("2048_libretro_ios_simulator.dylib").path
     var body: some View {
         VStack {
             Text("Core Status: \(viewModel.coreStatus)") // Display status

@@ -6,8 +6,8 @@
 //
 
 import AppKit  // For NSOpenPanel
-import CoreVideo  // For CVDisplayLink if used
 import Foundation
+import Metal
 import SwiftUI
 
 // macOS specific ViewModel
@@ -15,11 +15,14 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
     @Published var coreStatus: String = "Idle"
     @Published var coreIsLoaded: Bool = false  // Track core state for UI enabling
     @Published var isRunning = false
+    @Published var latestFrameData: Data?
+    @Published var frameWidth: UInt32 = 0
+    @Published var frameHeight: UInt32 = 0
+    @Published var metalPixelFormat: MTLPixelFormat = .invalid
 
     private var core: LibretroCore?
-    private var displayLink: CVDisplayLink?  // macOS uses CVDisplayLink
 
-    // MARK: - Core/ROM Loading (macOS)
+    // MARK: - Core/ROM Loading
 
     func selectAndLoadCore() {
         let openPanel = NSOpenPanel()
@@ -28,13 +31,10 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         openPanel.canChooseDirectories = false
         openPanel.canChooseFiles = true
         openPanel.allowsMultipleSelection = false
-        //        openPanel.allowedContentTypes = [.dynamicLibrary] // UTI for dylib
 
         if openPanel.runModal() == .OK {
             if let coreUrl = openPanel.url {
-                unload()  // Ensure previous core is unloaded
-                // On macOS, dlopen is less restrictive, can load from anywhere usually
-                // Make sure the core is compiled for macOS (arm64 or x86_64)
+                unload()
                 loadCore(corePath: coreUrl.path)
             }
         }
@@ -48,8 +48,6 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
 
         let openPanel = NSOpenPanel()
         openPanel.title = "Select ROM File"
-        // Add allowedContentTypes based on core requirements later
-        // openPanel.allowedContentTypes = [...]
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
         openPanel.allowsMultipleSelection = false
@@ -70,17 +68,17 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
             return
         }
         self.core = loadedCore
-        self.core?.delegate = self  // Set delegate to THIS macOS ViewModel instance
+        self.core?.delegate = self
 
         if self.core?.load() == true {
             coreStatus =
                 "Core Loaded: \(corePath.split(separator: "/").last ?? "")"
             coreIsLoaded = true
-            print("macOS: Core loaded successfully")
+            print("Core loaded successfully")
         } else {
             coreStatus = "Error: Failed to load core"
             coreIsLoaded = false
-            print("macOS: Failed to load core")
+            print("Failed to load core")
             self.core = nil
         }
     }
@@ -91,20 +89,27 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         if core.loadGame(romPath) {
             coreStatus =
                 "Game Loaded: \(romPath.split(separator: "/").last ?? "")"
-            print("macOS: Game loaded successfully")
+            print("Game loaded successfully")
         } else {
             coreStatus = "Error: Failed to load ROM"
-            print("macOS: Failed to load ROM at \(romPath)")
+            print("Failed to load ROM at \(romPath)")
         }
     }
 
     func canStart() -> Bool {
-        return coreIsLoaded && core?.canStart() ?? false
+        guard let core = self.core else { return false }
+        return coreIsLoaded && (core.supportNoGame || core.gameLoaded)
     }
 
     func startCore() {
         guard let core = self.core else { return }
-        if !core.canStart() { return }
+        if !canStart() {
+            return
+        }
+        if !core.gameLoaded && core.supportNoGame {
+            print("Calling load_game(NULL) for contentless core.")
+            core.loadGame()
+        }
         startRunLoop()
     }
 
@@ -115,12 +120,9 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         core = nil
         coreIsLoaded = false
         coreStatus = "Idle"
-        print("macOS: Core Unloaded")
+        print("Core Unloaded")
     }
 
-    // MARK: - Run Loop (macOS: CVDisplayLink or MTKViewDelegate)
-    // --- Include CVDisplayLink implementation here if NOT using MTKViewDelegate ---
-    // --- Otherwise, remove start/stop/runFrame and call core?.runFrame() from MTKViewDelegate ---
     func startRunLoop() { /* ... CVDisplayLink setup ... */
         coreStatus = "Running!"
         isRunning = true
@@ -131,10 +133,7 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
     }
     deinit { stopRunLoop() }  // Ensure cleanup
 
-    // MARK: - LibretroCoreDelegate Methods (macOS Implementations)
-    // These methods will be called BY the shared ObjC bridge, but implemented
-    // specifically for macOS here.
-
+    // MARK: - LibretroCoreDelegate Methods
     func renderVideoFrame(
         _ data: UnsafeRawPointer,
         width: UInt32,
@@ -142,19 +141,72 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         pitch: Int,
         format: retro_pixel_format
     ) {
-        // macOS: Handle video frame - update data for MacGameRendererView (MTKView)
-        // print("macOS Video: \(width)x\(height)")
-        // You might copy the data or pass the pointer (carefully) to the renderer
+        var bytesPerPixelInput: Int
+        var targetFormat: MTLPixelFormat = .invalid
+
+        switch format {
+        case RETRO_PIXEL_FORMAT_0RGB1555:
+            targetFormat = .r16Uint
+            bytesPerPixelInput = 2
+        case RETRO_PIXEL_FORMAT_XRGB8888:
+            targetFormat = .bgra8Unorm
+            bytesPerPixelInput = 4
+        default:
+            targetFormat = .invalid
+            print("Warning: Unsupported pixel format \(format)")
+            return
+        }
+
+        guard width > 0, height > 0, bytesPerPixelInput > 0 else {
+            print(
+                "Error: Invalid dimensions: (\(width), \(height))"
+            )
+            return
+        }
+
+        let outputRowBytes = Int(width) * bytesPerPixelInput
+
+        var frameDataToStore: Data?
+        if pitch == outputRowBytes {
+            // Frame data is contiguous - simple copy.
+            frameDataToStore = Data(bytes: data, count: Int(height) * pitch)
+        } else if pitch > outputRowBytes {
+            // Frame data is non-contiguous - copy row by row.
+            var outputBuffer = Data(capacity: Int(height) * outputRowBytes)
+            for y in 0..<Int(height) {
+                let inputRowPointer = data.advanced(by: y * pitch)
+                outputBuffer.append(
+                    UnsafeBufferPointer(
+                        start: inputRowPointer.assumingMemoryBound(
+                            to: UInt8.self
+                        ),
+                        count: outputRowBytes
+                    )
+                )
+            }
+            frameDataToStore = outputBuffer
+        } else {
+            print(
+                "Error: Pitch (\(pitch)) is less than outputRowBytes (\(outputRowBytes))"
+            )
+            frameDataToStore = nil
+        }
+
+        // Use DispatchQueue.main.async to ensure UI updates happen on the main thread
+        DispatchQueue.main.async {
+            self.latestFrameData = frameDataToStore  // Store the (potentially processed) data
+            self.frameWidth = width
+            self.frameHeight = height
+            self.metalPixelFormat = targetFormat
+        }
     }
 
     func playAudioSamples(_ data: UnsafePointer<Int16>, frames: Int) {
-        // macOS: Handle audio - feed samples to AVAudioEngine or other macOS audio API
-        // print("macOS Audio: \(frames) frames")
+        //         print("Audio: \(frames) frames")
     }
 
     func pollInput() {
-        // macOS: Update internal state based on NSEvent, GameController, etc.
-        // print("macOS Poll Input")
+        //         print("Poll Input")
     }
 
     func getInputState(
@@ -163,8 +215,6 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         index: UInt32,
         id: UInt32
     ) -> Int16 {
-        // macOS: Lookup state gathered during pollInput for the specific button/axis ID
-        // print("macOS Get Input State")
-        return 0  // Placeholder
+        return 0
     }
 }

@@ -25,9 +25,6 @@ static os_log_t logger(void) {
     // For some reason "==" doesn't work when comparing "currently_loaded_core"
     // and "self", so we have to keep track of whether this core is active.
     bool _isActive;
-
-    bool _supportNoGame;
-    bool _gameLoaded;
     enum retro_pixel_format _pixelFormat;
 
     // Handle for the dynamic library
@@ -123,14 +120,11 @@ static bool environment_callback(unsigned cmd, void *data) {
             (const enum retro_pixel_format *)data;
         os_log_debug(logger(), "[Environment] Core requested pixel format: %d",
                      *format);
-        if (*format == RETRO_PIXEL_FORMAT_0RGB1555) {
-            core->_pixelFormat = *format;
-            return true;
-        }
+        core->_pixelFormat = *format;
         os_log_error(logger(),
                      "[Environment] Unsupported pixel format requested: %d",
                      *format);
-        return false;
+        return true;
     }
     case RETRO_ENVIRONMENT_GET_VARIABLE: { // 15
         if (data == NULL) {
@@ -200,7 +194,7 @@ static bool environment_callback(unsigned cmd, void *data) {
 
 static void video_refresh_callback(const void *data, unsigned width,
                                    unsigned height, size_t pitch) {
-    os_log_debug(logger(), "[Video Refresh] Video refresh called.");
+    //    os_log_debug(logger(), "[Video Refresh] Video refresh called.");
     LibretroCore *core = g_current_loaded_core;
     if (!core || !core.delegate ||
         ![core.delegate respondsToSelector:@selector
@@ -356,25 +350,54 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     struct retro_system_info systemInfo = {0};
     retro_get_system_info(&systemInfo);
 
+    if (_gameLoaded) {
+        [self unloadGame];
+    }
     if (retro_deinit) {
         retro_deinit();
     }
 
-    _isActive = false;
+    _isActive = YES;
     g_current_loaded_core = nil;
     os_log_info(logger(), "[UnloadCore] Successfully unloaded core: %s",
                 systemInfo.library_name);
 }
 
+- (BOOL)loadGame {
+    if (!_isActive) {
+        os_log_error(
+            logger(),
+            "[LoadGame] Attempted to load a game on an inactive core.");
+        return NO;
+    } else if (!_supportNoGame) {
+        os_log_error(logger(), "[LoadGame] Attempted to load no content on a "
+                               "core that requires a game.");
+        return NO;
+    } else if (_gameLoaded) {
+        os_log_error(logger(), "[LoadGame] Core already has a loaded game.");
+        return NO;
+    } else if (!retro_load_game(NULL)) {
+        os_log_error(logger(), "[LoadGame] Failed to load game.");
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
 - (BOOL)loadGame:(NSString *)gamePath {
+    if (!_isActive) {
+        os_log_error(logger(),
+                     "[LoadGame] Loading from a path is unimplemented.");
+        return NO;
+    }
     return NO;
 }
 
 - (void)unloadGame {
-}
-
-- (BOOL)canStart {
-    return _supportNoGame || _gameLoaded;
+    if (_gameLoaded) {
+        retro_unload_game();
+        _gameLoaded = NO;
+    }
 }
 
 - (void)runFrame {

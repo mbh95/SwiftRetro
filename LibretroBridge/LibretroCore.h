@@ -6,7 +6,7 @@
 //
 
 #import "CoreOption.h"
-#include "libretro.h"
+#import "libretro.h"
 #import <Foundation/Foundation.h>
 
 #ifndef LibretroCore_h
@@ -24,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong)
     NSMutableDictionary<NSString *, CoreOption *> *coreOptions;
 @property(nonatomic, assign) BOOL optionsUpdated;
+@property(nonatomic, readonly) BOOL supportNoGame;
+@property(nonatomic, readonly) BOOL gameLoaded;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (nullable instancetype)initWithCorePath:(NSString *)corePath
@@ -31,9 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)load;
 - (void)unload;
+- (BOOL)loadGame;
 - (BOOL)loadGame:(NSString *)gamePath;
 - (void)unloadGame;
-- (BOOL)canStart;
 
 // Main loop function
 - (void)runFrame;
