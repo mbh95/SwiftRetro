@@ -90,8 +90,15 @@ struct ContentView: View {
             // Ensure cleanup when the window closes
             viewModel.unload()
         }
-        // Add keyboard/mouse event handling modifiers here if needed
-        // .onKeyPress(...)
+        .focusable()
+        .onKeyPress(phases: .down) { pressedKey in
+            viewModel.handleKeyDown(key: pressedKey.key)
+            return .handled
+        }
+        .onKeyPress(phases: .up) { pressedKey in
+            viewModel.handleKeyUp(key: pressedKey.key)
+            return .handled
+        }
     }
 }
 

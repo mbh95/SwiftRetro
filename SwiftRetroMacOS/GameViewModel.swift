@@ -23,6 +23,7 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
     @Published var latestFrame: Frame = Frame()
 
     private var core: LibretroCore?
+    private var pressedKeys: Set<KeyEquivalent> = []
 
     // MARK: - Core/ROM Loading
 
@@ -163,8 +164,16 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         //         print("Audio: \(frames) frames")
     }
 
+    func handleKeyDown(key: KeyEquivalent) {
+        pressedKeys.insert(key)
+    }
+
+    func handleKeyUp(key: KeyEquivalent) {
+        pressedKeys.remove(key)
+    }
+
     func pollInput() {
-        //         print("Poll Input")
+
     }
 
     func getInputState(
@@ -173,6 +182,28 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         index: UInt32,
         id: UInt32
     ) -> Int16 {
-        return 0
+//        print("port: \(port)\ndevice: \(device)\nindex: \(index)\nid: \(id)")
+        guard port == 0, device == RETRO_DEVICE_JOYPAD else { return 0 }
+
+        switch id {
+        case 8: // RETRO_DEVICE_ID_JOYPAD_A:
+            let isPressed: Int16 = pressedKeys.contains(KeyEquivalent("x")) ? 1 : 0
+            print("A: %@", isPressed)
+            return isPressed
+        case 0: // RETRO_DEVICE_ID_JOYPAD_B:
+            return pressedKeys.contains(KeyEquivalent("z")) ? 1 : 0
+        case 3: // RETRO_DEVICE_ID_JOYPAD_START:
+            return pressedKeys.contains(KeyEquivalent.return) ? 1 : 0
+        case 4: // RETRO_DEVICE_ID_JOYPAD_UP:
+            return pressedKeys.contains(KeyEquivalent.upArrow) ? 1 : 0
+        case 5: // RETRO_DEVICE_ID_JOYPAD_DOWN:
+            return pressedKeys.contains(KeyEquivalent.downArrow) ? 1 : 0
+        case 6: // RETRO_DEVICE_ID_JOYPAD_LEFT:
+            return pressedKeys.contains(KeyEquivalent.leftArrow) ? 1 : 0
+        case 7: // RETRO_DEVICE_ID_JOYPAD_RIGHT:
+            return pressedKeys.contains(KeyEquivalent.rightArrow) ? 1 : 0
+        default:
+            return 0
+        }
     }
 }

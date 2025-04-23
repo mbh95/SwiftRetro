@@ -236,11 +236,24 @@ static size_t audio_sample_batch_callback(const int16_t *data, size_t frames) {
     return 0;
 }
 
-static void input_poll_callback(void) {}
+static void input_poll_callback(void) {
+    LibretroCore *core = g_current_loaded_core;
+    if (!core || !core.delegate ||
+        ![core.delegate respondsToSelector:@selector(pollInput)]) {
+        return;
+    }
+    [core.delegate pollInput];
+}
 
 static int16_t input_state_callback(unsigned port, unsigned device,
                                     unsigned index, unsigned id) {
-    return 0;
+    LibretroCore *core = g_current_loaded_core;
+    if (!core || !core.delegate ||
+        ![core.delegate
+            respondsToSelector:@selector(getInputState:device:index:id:)]) {
+        return 0;
+    }
+    return [core.delegate getInputState:port device:device index:index id:id];
 }
 
 // MARK: LibretroCore Implementation
