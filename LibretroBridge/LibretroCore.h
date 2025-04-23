@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)loadGame;
 - (BOOL)loadGame:(NSString *)gamePath;
 - (void)unloadGame;
-- (uint64_t)getTargetFrameMicroseconds;
+- (double)getTargetFps;
 
 // Main loop function
 - (void)runFrame;

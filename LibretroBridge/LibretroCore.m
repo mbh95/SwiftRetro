@@ -12,7 +12,7 @@
 #import <mach/mach_time.h>
 #import <os/log.h>
 
-#define DEFAULT_FRAME_USEC 16667
+#define DEFAULT_FRAMERATE 60
 
 static os_log_t loggerInstance;
 static os_log_t logger(void) {
@@ -28,7 +28,11 @@ static os_log_t logger(void) {
     // For some reason "==" doesn't work when comparing "currently_loaded_core"
     // and "self", so we have to keep track of whether this core is active.
     BOOL _isActive;
+    NSData *_currentGameData;
     enum retro_pixel_format _pixelFormat;
+
+    struct retro_system_av_info _systemAvInfo;
+
     struct retro_frame_time_callback _frameTimeCallback;
     uint64_t _lastFrameTime;
     mach_timebase_info_data_t _timebaseInfo;
@@ -421,18 +425,56 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     } else if (!retro_load_game(NULL)) {
         os_log_error(logger(), "[LoadGame] Failed to load game.");
         return NO;
-    } else {
-        return YES;
     }
+    retro_get_system_av_info(&_systemAvInfo);
+    return YES;
 }
 
 - (BOOL)loadGame:(NSString *)gamePath {
     if (!_isActive) {
+        os_log_error(
+            logger(),
+            "[LoadGame] Attempted to load a game on an inactive core.");
+        return NO;
+    } else if (_gameLoaded) {
+        os_log_error(
+            logger(),
+            "[LoadGame] Attempted to load a game when one is already loaded.");
+        return NO;
+    } else if (!gamePath || gamePath.length == 0) {
         os_log_error(logger(),
-                     "[LoadGame] Loading from a path is unimplemented.");
+                     "[LoadGame] Invalid or empty game path provided.");
         return NO;
     }
-    return NO;
+
+    struct retro_game_info gameInfo = {0};
+    gameInfo.path =
+        [gamePath UTF8String]; // Get C-string representation of the path
+
+    _currentGameData = [NSData dataWithContentsOfFile:gamePath];
+    if (!_currentGameData) {
+        os_log_error(logger(),
+                     "[LoadGame] Failed to read game data from path: %@",
+                     gamePath);
+    } else {
+        gameInfo.data = [_currentGameData bytes];
+        gameInfo.size = [_currentGameData length];
+    }
+
+    if (!retro_load_game(&gameInfo)) {
+        os_log_error(logger(), "[LoadGame] Core failed to load game: %s",
+                     gameInfo.path);
+        _currentGameData = NULL;
+        return NO;
+    }
+
+    retro_get_system_av_info(&_systemAvInfo);
+
+    _gameLoaded = YES;
+    _lastFrameTime = 0; // Reset frame timing
+    os_log_info(logger(), "[LoadGame] Successfully loaded game: %s",
+                gameInfo.path);
+    return YES;
 }
 
 - (void)unloadGame {
@@ -443,11 +485,11 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     }
 }
 
-- (uint64_t)getTargetFrameMicroseconds {
-    if (_frameTimeCallback.reference == 0) {
-        return DEFAULT_FRAME_USEC;
+- (double)getTargetFps {
+    if (_systemAvInfo.timing.fps == 0) {
+        return DEFAULT_FRAMERATE;
     }
-    return _frameTimeCallback.reference;
+    return _systemAvInfo.timing.fps;
 }
 
 - (void)runFrame {
