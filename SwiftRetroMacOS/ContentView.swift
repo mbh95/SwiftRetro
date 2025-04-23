@@ -5,13 +5,51 @@
 //  Created by Matt Hammond on 4/9/25.
 //
 
+import AppKit
+import CoreGraphics
 import MetalKit
 import SwiftUI
-import CoreGraphics
 
 struct ContentView: View {
     // Keep the ViewModel specific to this macOS view hierarchy
     @StateObject private var viewModel = GameViewModel()
+
+    func selectAndLoadCore() {
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Select Libretro Core (.dylib)"
+        openPanel.showsHiddenFiles = false
+        openPanel.canChooseDirectories = false
+        openPanel.canChooseFiles = true
+        openPanel.allowsMultipleSelection = false
+
+        guard openPanel.runModal() == .OK,
+            let coreUrl = openPanel.url
+        else {
+            return
+        }
+
+        viewModel.loadCore(corePath: coreUrl.path)
+    }
+
+    func selectAndLoadGame() {
+        guard viewModel.coreIsLoaded else {
+            return
+        }
+
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Select Game File"
+        openPanel.canChooseFiles = true
+        openPanel.canChooseDirectories = false
+        openPanel.allowsMultipleSelection = false
+
+        guard openPanel.runModal() == .OK,
+            let gameUrl = openPanel.url
+        else {
+            return
+        }
+
+        viewModel.loadGame(gamePath: gameUrl.path)
+    }
 
     var body: some View {
         VStack {
@@ -22,16 +60,19 @@ struct ContentView: View {
                 .padding(.bottom)
 
             GameRendererView(viewModel: viewModel)
-                .frame(width: CGFloat(viewModel.frameWidth), height: CGFloat(viewModel.frameHeight))
+                .frame(
+                    width: CGFloat(viewModel.latestFrameData?.frameWidth ?? 0),
+                    height: CGFloat(viewModel.latestFrameData?.frameHeight ?? 0)
+                )
                 .border(Color.gray)  // So we can see its bounds
 
             HStack(spacing: 20) {
                 Button("Load Core") {
-                    viewModel.selectAndLoadCore()  // Uses NSOpenPanel
+                    selectAndLoadCore()
                 }
 
                 Button("Load ROM") {
-                    viewModel.selectAndLoadRom()  // Uses NSOpenPanel
+                    selectAndLoadGame()
                 }
                 .disabled(viewModel.coreIsLoaded == false)  // Example: Disable if no core loaded
 
@@ -39,6 +80,7 @@ struct ContentView: View {
                     viewModel.unload()
                 }
                 .disabled(viewModel.coreIsLoaded == false)  // Example: Disable if no core loaded
+
                 Button("Start") {
                     viewModel.startCore()
                 }
@@ -80,9 +122,9 @@ struct GameRendererView: NSViewRepresentable {
 
         context.coordinator.setupMetal()
         context.coordinator.setupTexture(
-            width: Int(viewModel.frameWidth),
-            height: Int(viewModel.frameHeight),
-            format: viewModel.metalPixelFormat
+            width: Int(viewModel.latestFrameData?.frameWidth ?? 0),
+            height: Int(viewModel.latestFrameData?.frameHeight ?? 0),
+            format: viewModel.latestFrameData?.metalPixelFormat ?? .invalid
         )
 
         return mtkView
@@ -91,9 +133,9 @@ struct GameRendererView: NSViewRepresentable {
     // Update the view (if needed, e.g., resizing)
     func updateNSView(_ nsView: MTKView, context: Context) {
         context.coordinator.setupTexture(
-            width: Int(viewModel.frameWidth),
-            height: Int(viewModel.frameHeight),
-            format: viewModel.metalPixelFormat
+            width: Int(viewModel.latestFrameData?.frameWidth ?? 0),
+            height: Int(viewModel.latestFrameData?.frameHeight ?? 0),
+            format: viewModel.latestFrameData?.metalPixelFormat ?? .invalid
         )
         nsView.needsDisplay = true
     }
@@ -249,10 +291,10 @@ struct GameRendererView: NSViewRepresentable {
             // Fetch and validate the frame data
             guard let currentTexture = texture,
                 let frameData = viewModel.latestFrameData,  // Use the data from ViewModel
-                currentTexture.width == viewModel.frameWidth,  // Ensure texture matches data
-                currentTexture.height == viewModel.frameHeight,
-                currentTexture.pixelFormat == viewModel.metalPixelFormat,  // Ensure formats match
-                viewModel.frameWidth > 0, viewModel.frameHeight > 0
+                currentTexture.width == frameData.frameWidth,  // Ensure texture matches data
+                currentTexture.height == frameData.frameHeight,
+                currentTexture.pixelFormat == frameData.metalPixelFormat,  // Ensure formats match
+                frameData.frameWidth > 0, frameData.frameHeight > 0
             else {
                 clearScreen(in: view)
                 return
@@ -274,7 +316,7 @@ struct GameRendererView: NSViewRepresentable {
                 currentTexture.width,
                 currentTexture.height
             )
-            frameData.withUnsafeBytes {
+            frameData.buffer.withUnsafeBytes {
                 (bufferPointer: UnsafeRawBufferPointer) in
                 guard let baseAddress = bufferPointer.baseAddress else {
                     print("Error: Could not get base address of frame data.")

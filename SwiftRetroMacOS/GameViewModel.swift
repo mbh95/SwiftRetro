@@ -5,95 +5,57 @@
 //  Created by Matt Hammond on 4/9/25.
 //
 
-import AppKit  // For NSOpenPanel
 import Foundation
 import Metal
 import SwiftUI
 
-// macOS specific ViewModel
+struct FrameData {
+    var buffer: Data
+    var frameWidth: UInt32
+    var frameHeight: UInt32
+    var metalPixelFormat: MTLPixelFormat
+}
+
 class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
     @Published var coreStatus: String = "Idle"
-    @Published var coreIsLoaded: Bool = false  // Track core state for UI enabling
+    @Published var coreIsLoaded: Bool = false
     @Published var isRunning = false
-    @Published var latestFrameData: Data?
-    @Published var frameWidth: UInt32 = 0
-    @Published var frameHeight: UInt32 = 0
-    @Published var metalPixelFormat: MTLPixelFormat = .invalid
+    @Published var latestFrameData: FrameData?
 
     private var core: LibretroCore?
 
     // MARK: - Core/ROM Loading
 
-    func selectAndLoadCore() {
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Select Libretro Core (.dylib)"
-        openPanel.showsHiddenFiles = false
-        openPanel.canChooseDirectories = false
-        openPanel.canChooseFiles = true
-        openPanel.allowsMultipleSelection = false
-
-        if openPanel.runModal() == .OK {
-            if let coreUrl = openPanel.url {
-                unload()
-                loadCore(corePath: coreUrl.path)
-            }
-        }
-    }
-
-    func selectAndLoadRom() {
-        guard core != nil else {
-            coreStatus = "Load Core First!"
-            return
-        }
-
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Select ROM File"
-        openPanel.canChooseFiles = true
-        openPanel.canChooseDirectories = false
-        openPanel.allowsMultipleSelection = false
-
-        if openPanel.runModal() == .OK {
-            if let romUrl = openPanel.url {
-                loadRom(romPath: romUrl.path)
-            }
-        }
-    }
-
-    private func loadCore(corePath: String) {
+    func loadCore(corePath: String) {
         coreStatus = "Loading Core..."
         coreIsLoaded = false
-        guard let loadedCore = LibretroCore(corePath: corePath) else {
-            coreStatus = "Error: Failed to initialize core"
-            print("Failed to initialize core at \(corePath)")
+        guard let loadedCore = LibretroCore(corePath: corePath),
+            loadedCore.load()
+        else {
+            coreStatus = "Error: Failed to load core"
+            print("Failed to load core at \(corePath)")
             return
         }
-        self.core = loadedCore
-        self.core?.delegate = self
 
-        if self.core?.load() == true {
-            coreStatus =
-                "Core Loaded: \(corePath.split(separator: "/").last ?? "")"
-            coreIsLoaded = true
-            print("Core loaded successfully")
-        } else {
-            coreStatus = "Error: Failed to load core"
-            coreIsLoaded = false
-            print("Failed to load core")
-            self.core = nil
-        }
+        core = loadedCore
+        core?.delegate = self
+        coreIsLoaded = true
+        coreStatus = "Core loaded"
     }
 
-    private func loadRom(romPath: String) {
-        guard let core = self.core else { return }
-        coreStatus = "Loading ROM..."
-        if core.loadGame(romPath) {
-            coreStatus =
-                "Game Loaded: \(romPath.split(separator: "/").last ?? "")"
-            print("Game loaded successfully")
-        } else {
-            coreStatus = "Error: Failed to load ROM"
-            print("Failed to load ROM at \(romPath)")
+    func loadGame(gamePath: String) {
+        coreStatus = "Loading game..."
+        guard let core = self.core,
+            core.loadGame(gamePath)
+        else {
+            coreStatus = "Error: Failed to load game"
+            print("Failed to load game at \(gamePath)")
+            return
         }
+
+        coreStatus =
+            "Game Loaded: \(gamePath.split(separator: "/").last ?? "")"
+        print("Game loaded successfully")
     }
 
     func canStart() -> Bool {
@@ -102,36 +64,28 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
     }
 
     func startCore() {
-        guard let core = self.core else { return }
-        if !canStart() {
-            return
-        }
+        guard let core = self.core, canStart() else { return }
         if !core.gameLoaded && core.supportNoGame {
             print("Calling load_game(NULL) for contentless core.")
             core.loadGame()
         }
-        startRunLoop()
+        coreStatus = "Running!"
+        isRunning = true
     }
 
     func unload() {
-        stopRunLoop()
+        isRunning = false
         core?.unloadGame()
-        core?.unload()  // Calls the ObjC unload/cleanup
+        core?.unload()
         core = nil
         coreIsLoaded = false
         coreStatus = "Idle"
         print("Core Unloaded")
     }
 
-    func startRunLoop() { /* ... CVDisplayLink setup ... */
-        coreStatus = "Running!"
-        isRunning = true
-    }
     @objc func runFrame() { core?.runFrame() }
-    func stopRunLoop() { /* ... CVDisplayLink teardown ... */
-        isRunning = false
-    }
-    deinit { stopRunLoop() }  // Ensure cleanup
+
+    deinit { unload() }  // Ensure cleanup
 
     // MARK: - LibretroCoreDelegate Methods
     func renderVideoFrame(
@@ -145,9 +99,6 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         var targetFormat: MTLPixelFormat = .invalid
 
         switch format {
-        case RETRO_PIXEL_FORMAT_0RGB1555:
-            targetFormat = .r16Uint
-            bytesPerPixelInput = 2
         case RETRO_PIXEL_FORMAT_XRGB8888:
             targetFormat = .bgra8Unorm
             bytesPerPixelInput = 4
@@ -157,19 +108,17 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
             return
         }
 
-        guard width > 0, height > 0, bytesPerPixelInput > 0 else {
-            print(
-                "Error: Invalid dimensions: (\(width), \(height))"
-            )
+        guard width > 0, height > 0 else {
+            print("Error: Invalid dimensions: (\(width)x\(height))")
             return
         }
 
         let outputRowBytes = Int(width) * bytesPerPixelInput
 
-        var frameDataToStore: Data?
+        var outputBuffer: Data?
         if pitch == outputRowBytes {
             // Frame data is contiguous - simple copy.
-            frameDataToStore = Data(bytes: data, count: Int(height) * pitch)
+            outputBuffer = Data(bytes: data, count: Int(height) * pitch)
         } else if pitch > outputRowBytes {
             // Frame data is non-contiguous - copy row by row.
             var outputBuffer = Data(capacity: Int(height) * outputRowBytes)
@@ -184,20 +133,25 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
                     )
                 )
             }
-            frameDataToStore = outputBuffer
         } else {
             print(
                 "Error: Pitch (\(pitch)) is less than outputRowBytes (\(outputRowBytes))"
             )
-            frameDataToStore = nil
+            outputBuffer = nil
         }
 
         // Use DispatchQueue.main.async to ensure UI updates happen on the main thread
         DispatchQueue.main.async {
-            self.latestFrameData = frameDataToStore  // Store the (potentially processed) data
-            self.frameWidth = width
-            self.frameHeight = height
-            self.metalPixelFormat = targetFormat
+            guard let finalOutputBuffer = outputBuffer else {
+                self.latestFrameData = nil
+                return
+            }
+            self.latestFrameData = FrameData(
+                buffer: finalOutputBuffer,
+                frameWidth: width,
+                frameHeight: height,
+                metalPixelFormat: targetFormat
+            )
         }
     }
 

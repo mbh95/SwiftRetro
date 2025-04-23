@@ -2314,6 +2314,12 @@
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
@@ -2362,6 +2368,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Resources/Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
