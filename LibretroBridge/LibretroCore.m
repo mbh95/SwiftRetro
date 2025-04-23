@@ -9,7 +9,10 @@
 #import "CoreOption.h"
 #import "libretro.h"
 #import <dlfcn.h> // For dlopen, dlsym, dlclose
+#import <mach/mach_time.h>
 #import <os/log.h>
+
+#define DEFAULT_FRAME_USEC 16667
 
 static os_log_t loggerInstance;
 static os_log_t logger(void) {
@@ -26,6 +29,9 @@ static os_log_t logger(void) {
     // and "self", so we have to keep track of whether this core is active.
     BOOL _isActive;
     enum retro_pixel_format _pixelFormat;
+    struct retro_frame_time_callback _frameTimeCallback;
+    uint64_t _lastFrameTime;
+    mach_timebase_info_data_t _timebaseInfo;
 
     // Handle for the dynamic library
     void *_coreHandle;
@@ -121,9 +127,6 @@ static bool environment_callback(unsigned cmd, void *data) {
         os_log_debug(logger(), "[Environment] Core requested pixel format: %d",
                      *format);
         core->_pixelFormat = *format;
-        os_log_error(logger(),
-                     "[Environment] Unsupported pixel format requested: %d",
-                     *format);
         return true;
     }
     case RETRO_ENVIRONMENT_GET_VARIABLE: { // 15
@@ -181,8 +184,27 @@ static bool environment_callback(unsigned cmd, void *data) {
         core->_supportNoGame = true;
         return true;
     }
+    case RETRO_ENVIRONMENT_SET_FRAME_TIME_CALLBACK: { // 21
+        os_log_debug(logger(), "[Environment] Setting frame-time callback.");
+        if (data == NULL) {
+            memset(&core->_frameTimeCallback, 0,
+                   sizeof(core->_frameTimeCallback));
+            os_log_debug(logger(),
+                         "[Environment] Cleared frame-time callback.");
+            return true;
+        }
+        core->_frameTimeCallback =
+            *(const struct retro_frame_time_callback *)data;
+        os_log_debug(logger(),
+                     "[Environment] Set frame-time callback with divisor %lld.",
+                     core->_frameTimeCallback.reference);
+        return true;
+    }
     case RETRO_ENVIRONMENT_GET_LOG_INTERFACE: { // 27
-        os_log_debug(logger(), "[Environment] Installed core logger.");
+        os_log_debug(logger(), "[Environment] Setting core logger.");
+        if (data == NULL) {
+            os_log_error(logger(), "[Environment] Core logger data NULL.");
+        }
         struct retro_log_callback *cb = (struct retro_log_callback *)data;
         cb->log = core_log;
         return true;
@@ -321,6 +343,10 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     self.coreOptions = [NSMutableDictionary dictionary];
     self.optionsUpdated = NO;
 
+    memset(&_frameTimeCallback, 0, sizeof(_frameTimeCallback));
+    _lastFrameTime = 0;
+    mach_timebase_info(&_timebaseInfo);
+
     // Make sure the static callbacks can reference this instance before`
     // installing them.`
     g_current_loaded_core = self;
@@ -357,7 +383,10 @@ static int16_t input_state_callback(unsigned port, unsigned device,
         retro_deinit();
     }
 
-    _isActive = YES;
+    memset(&_frameTimeCallback, 0, sizeof(_frameTimeCallback));
+    _lastFrameTime = 0;
+
+    _isActive = NO;
     g_current_loaded_core = nil;
     os_log_info(logger(), "[UnloadCore] Successfully unloaded core: %s",
                 systemInfo.library_name);
@@ -394,10 +423,18 @@ static int16_t input_state_callback(unsigned port, unsigned device,
 }
 
 - (void)unloadGame {
+    _lastFrameTime = 0;
     if (_gameLoaded) {
         retro_unload_game();
         _gameLoaded = NO;
     }
+}
+
+- (uint64_t)getTargetFrameMicroseconds {
+    if (_frameTimeCallback.reference == 0) {
+        return DEFAULT_FRAME_USEC;
+    }
+    return _frameTimeCallback.reference;
 }
 
 - (void)runFrame {
@@ -405,6 +442,20 @@ static int16_t input_state_callback(unsigned port, unsigned device,
         os_log_error(logger(), "[RunFrame] Attempted to run an unloaded core.");
         return;
     }
+
+    // Report last frame time
+    if (_lastFrameTime != 0 && _frameTimeCallback.callback != NULL) {
+        uint64_t currentTime = mach_absolute_time();
+        uint64_t elapsedTicks = currentTime - _lastFrameTime;
+        uint64_t elapsedNanoseconds =
+            elapsedTicks * _timebaseInfo.numer / _timebaseInfo.denom;
+        uint64_t elapsedMicroseconds = elapsedNanoseconds / 1000;
+        _frameTimeCallback.callback(elapsedMicroseconds);
+        _lastFrameTime = currentTime;
+    } else {
+        _lastFrameTime = mach_absolute_time();
+    }
+
     if (retro_run) {
         retro_run();
     }
