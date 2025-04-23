@@ -24,7 +24,7 @@ static os_log_t logger(void) {
 @implementation LibretroCore {
     // For some reason "==" doesn't work when comparing "currently_loaded_core"
     // and "self", so we have to keep track of whether this core is active.
-    bool _isActive;
+    BOOL _isActive;
     enum retro_pixel_format _pixelFormat;
 
     // Handle for the dynamic library
@@ -324,7 +324,7 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     // Make sure the static callbacks can reference this instance before`
     // installing them.`
     g_current_loaded_core = self;
-    _isActive = true;
+    _isActive = YES;
 
     retro_set_environment(environment_callback);
     retro_set_video_refresh(video_refresh_callback);
