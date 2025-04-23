@@ -100,7 +100,7 @@ static void core_log(enum retro_log_level level, const char *fmt, ...) {
 
     switch (level) {
     case RETRO_LOG_DEBUG:
-        os_log_debug(logger(), "[Core Debug] %@", message);
+//        os_log_debug(logger(), "[Core Debug] %@", message);
         break;
     case RETRO_LOG_INFO:
         os_log(logger(), "[Core Info] %@", message);
@@ -174,8 +174,6 @@ static bool environment_callback(unsigned cmd, void *data) {
         return true;
     }
     case RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE: { // 17
-        os_log_debug(logger(), "[Environment] Core options updated? %@",
-                     core.optionsUpdated ? @"YES" : @"NO");
         if (data != NULL) {
             *(bool *)data = core.optionsUpdated;
         }

@@ -107,6 +107,9 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         case RETRO_PIXEL_FORMAT_XRGB8888:
             targetFormat = .bgra8Unorm
             bytesPerPixelInput = 4
+        case RETRO_PIXEL_FORMAT_RGB565:
+            targetFormat = .r16Unorm
+            bytesPerPixelInput = 2
         default:
             targetFormat = .invalid
             print("Warning: Unsupported pixel format \(format)")
@@ -119,11 +122,17 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         }
 
         let outputRowBytes = Int(width) * bytesPerPixelInput
-
-        var outputBuffer: Data?
         if pitch == outputRowBytes {
             // Frame data is contiguous - simple copy.
-            outputBuffer = Data(bytes: data, count: Int(height) * pitch)
+            let outputBuffer = Data(bytes: data, count: Int(height) * pitch)
+            DispatchQueue.main.async {
+                self.latestFrame = Frame(
+                    buffer: outputBuffer,
+                    width: Int(width),
+                    height: Int(height),
+                    metalPixelFormat: targetFormat
+                )
+            }
         } else if pitch > outputRowBytes {
             // Frame data is non-contiguous - copy row by row.
             var outputBuffer = Data(capacity: Int(height) * outputRowBytes)
@@ -138,25 +147,23 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
                     )
                 )
             }
+            DispatchQueue.main.async {
+                self.latestFrame = Frame(
+                    buffer: outputBuffer,
+                    width: Int(width),
+                    height: Int(height),
+                    metalPixelFormat: targetFormat
+                )
+            }
         } else {
             print(
                 "Error: Pitch (\(pitch)) is less than outputRowBytes (\(outputRowBytes))"
             )
-            outputBuffer = nil
-        }
-
-        // Use DispatchQueue.main.async to ensure UI updates happen on the main thread
-        DispatchQueue.main.async {
-            guard let finalOutputBuffer = outputBuffer else {
+            DispatchQueue.main.async {
                 self.latestFrame = Frame()
                 return
+
             }
-            self.latestFrame = Frame(
-                buffer: finalOutputBuffer,
-                width: Int(width),
-                height: Int(height),
-                metalPixelFormat: targetFormat
-            )
         }
     }
 
@@ -182,25 +189,23 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         index: UInt32,
         id: UInt32
     ) -> Int16 {
-//        print("port: \(port)\ndevice: \(device)\nindex: \(index)\nid: \(id)")
+        //        print("port: \(port)\ndevice: \(device)\nindex: \(index)\nid: \(id)")
         guard port == 0, device == RETRO_DEVICE_JOYPAD else { return 0 }
 
         switch id {
-        case 8: // RETRO_DEVICE_ID_JOYPAD_A:
-            let isPressed: Int16 = pressedKeys.contains(KeyEquivalent("x")) ? 1 : 0
-            print("A: %@", isPressed)
-            return isPressed
-        case 0: // RETRO_DEVICE_ID_JOYPAD_B:
+        case 8:  // RETRO_DEVICE_ID_JOYPAD_A:
+            return pressedKeys.contains(KeyEquivalent("x")) ? 1 : 0
+        case 0:  // RETRO_DEVICE_ID_JOYPAD_B:
             return pressedKeys.contains(KeyEquivalent("z")) ? 1 : 0
-        case 3: // RETRO_DEVICE_ID_JOYPAD_START:
+        case 3:  // RETRO_DEVICE_ID_JOYPAD_START:
             return pressedKeys.contains(KeyEquivalent.return) ? 1 : 0
-        case 4: // RETRO_DEVICE_ID_JOYPAD_UP:
+        case 4:  // RETRO_DEVICE_ID_JOYPAD_UP:
             return pressedKeys.contains(KeyEquivalent.upArrow) ? 1 : 0
-        case 5: // RETRO_DEVICE_ID_JOYPAD_DOWN:
+        case 5:  // RETRO_DEVICE_ID_JOYPAD_DOWN:
             return pressedKeys.contains(KeyEquivalent.downArrow) ? 1 : 0
-        case 6: // RETRO_DEVICE_ID_JOYPAD_LEFT:
+        case 6:  // RETRO_DEVICE_ID_JOYPAD_LEFT:
             return pressedKeys.contains(KeyEquivalent.leftArrow) ? 1 : 0
-        case 7: // RETRO_DEVICE_ID_JOYPAD_RIGHT:
+        case 7:  // RETRO_DEVICE_ID_JOYPAD_RIGHT:
             return pressedKeys.contains(KeyEquivalent.rightArrow) ? 1 : 0
         default:
             return 0
