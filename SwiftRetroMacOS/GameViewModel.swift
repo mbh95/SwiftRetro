@@ -9,18 +9,18 @@ import Foundation
 import Metal
 import SwiftUI
 
-struct FrameData {
-    var buffer: Data
-    var frameWidth: UInt32
-    var frameHeight: UInt32
-    var metalPixelFormat: MTLPixelFormat
+struct Frame {
+    var buffer: Data?
+    var width: Int = 0
+    var height: Int = 0
+    var metalPixelFormat: MTLPixelFormat = .invalid
 }
 
 class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
     @Published var coreStatus: String = "Idle"
     @Published var coreIsLoaded: Bool = false
     @Published var isRunning = false
-    @Published var latestFrameData: FrameData?
+    @Published var latestFrame: Frame = Frame()
 
     private var core: LibretroCore?
 
@@ -60,7 +60,8 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
 
     func canStart() -> Bool {
         guard let core = self.core else { return false }
-        return coreIsLoaded && (core.supportNoGame || core.gameLoaded)
+        return !isRunning && coreIsLoaded
+            && (core.supportNoGame || core.gameLoaded)
     }
 
     func startCore() {
@@ -75,11 +76,14 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
 
     func unload() {
         isRunning = false
-        core?.unloadGame()
-        core?.unload()
-        core = nil
-        coreIsLoaded = false
         coreStatus = "Idle"
+        latestFrame = Frame()
+        guard let loadedCore = self.core, coreIsLoaded else { return }
+        loadedCore.unloadGame()
+        loadedCore.unload()
+        self.core = nil
+        coreIsLoaded = false
+
         print("Core Unloaded")
     }
 
@@ -143,13 +147,13 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         // Use DispatchQueue.main.async to ensure UI updates happen on the main thread
         DispatchQueue.main.async {
             guard let finalOutputBuffer = outputBuffer else {
-                self.latestFrameData = nil
+                self.latestFrame = Frame()
                 return
             }
-            self.latestFrameData = FrameData(
+            self.latestFrame = Frame(
                 buffer: finalOutputBuffer,
-                frameWidth: width,
-                frameHeight: height,
+                width: Int(width),
+                height: Int(height),
                 metalPixelFormat: targetFormat
             )
         }

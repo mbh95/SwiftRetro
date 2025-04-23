@@ -453,7 +453,10 @@
 				"Bundled Cores/2048_libretro.dylib",
 				"Bundled Cores/mgba_libretro.dylib",
 				ContentView.swift,
+				GameView.swift,
 				GameViewModel.swift,
+				MetalExtensions.swift,
+				MetalRenderer.swift,
 				Shaders.metal,
 				SwiftRetroMacOSApp.swift,
 			);
@@ -495,7 +498,10 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ContentView.swift,
+				GameView.swift,
 				GameViewModel.swift,
+				MetalExtensions.swift,
+				MetalRenderer.swift,
 				Shaders.metal,
 				SwiftRetroMacOSApp.swift,
 			);
