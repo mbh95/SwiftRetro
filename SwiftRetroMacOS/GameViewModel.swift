@@ -14,6 +14,7 @@ struct Frame {
     var width: Int = 0
     var height: Int = 0
     var metalPixelFormat: MTLPixelFormat = .invalid
+    var retroPixelFormat: retro_pixel_format = RETRO_PIXEL_FORMAT_0RGB1555
 }
 
 class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
@@ -108,7 +109,10 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
             targetFormat = .bgra8Unorm
             bytesPerPixelInput = 4
         case RETRO_PIXEL_FORMAT_RGB565:
-            targetFormat = .r16Unorm
+            targetFormat = .r16Uint
+            bytesPerPixelInput = 2
+        case RETRO_PIXEL_FORMAT_0RGB1555:
+            targetFormat = .r16Uint
             bytesPerPixelInput = 2
         default:
             targetFormat = .invalid
@@ -130,7 +134,8 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
                     buffer: outputBuffer,
                     width: Int(width),
                     height: Int(height),
-                    metalPixelFormat: targetFormat
+                    metalPixelFormat: targetFormat,
+                    retroPixelFormat: format
                 )
             }
         } else if pitch > outputRowBytes {
@@ -152,7 +157,8 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
                     buffer: outputBuffer,
                     width: Int(width),
                     height: Int(height),
-                    metalPixelFormat: targetFormat
+                    metalPixelFormat: targetFormat,
+                    retroPixelFormat: format
                 )
             }
         } else {

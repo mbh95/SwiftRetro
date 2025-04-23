@@ -6,6 +6,7 @@
 //
 
 #include <metal_stdlib>
+
 using namespace metal;
 
 struct VertexOut {
@@ -24,10 +25,48 @@ vertex VertexOut vertexShader(
     return out;
 }
 
-fragment float4 fragmentShader(
+fragment float4 fragmentShader_XRGB8888(
     VertexOut interpolated [[stage_in]],
-    texture2d<float, access::read> gameTexture [[texture(0)]]
+    texture2d<float, access::sample> gameTexture [[texture(0)]]
+) {
+    constexpr sampler textureSampler(mag_filter::nearest, min_filter::nearest);
+    return gameTexture.sample(textureSampler, interpolated.texCoord);
+}
+
+fragment float4 fragmentShader_0RGB1555(
+    VertexOut interpolated [[stage_in]],
+    texture2d<uint16_t, access::read> gameTexture [[texture(0)]]
 ) {
     uint2 pixel_coord = uint2(interpolated.texCoord * float2(gameTexture.get_width(), gameTexture.get_height()));
-    return gameTexture.read(pixel_coord);
+    uint16_t pixel = gameTexture.read(pixel_coord).r;
+        
+    // Decode 0RGB1555
+    // 0 RRRRR GGGGG BBBBB
+    float r = float((pixel >> 10) & 0x1F) / 31.0;
+    float g = float((pixel >> 5)  & 0x1F) / 31.0;
+    float b = float(pixel         & 0x1F) / 31.0;
+    
+    return float4(r,g,b, 1.0);
+}
+
+
+
+fragment float4 fragmentShader_RGB565(
+    VertexOut interpolated [[stage_in]],
+    texture2d<uint16_t, access::read> gameTexture [[texture(0)]]
+) {
+    uint2 pixel_coord = uint2(interpolated.texCoord * float2(gameTexture.get_width(), gameTexture.get_height()));
+    uint16_t pixel = gameTexture.read(pixel_coord).r;
+    
+    // Decode RGB565
+    // RRRRR GGGGGG BBBBB
+    uint16_t r5 = (pixel >> 11) & 0x1F;
+    uint16_t g5 = (pixel >> 5)  & 0x3F;
+    uint16_t b5 =  pixel        & 0x1F;
+    
+    float r = r5 / (float) 0x1F;
+    float g = g5 / (float) 0x3F;
+    float b = b5 / (float) 0x1F;
+    
+    return float4(r, g, b, 1.0);
 }

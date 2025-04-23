@@ -13,7 +13,7 @@ extension MTLPixelFormat {
         case .bgra8Unorm, .rgba8Unorm, .rgba8Sint, .bgra8Unorm_srgb,
             .rgba8Unorm_srgb:
             return 4
-        case .r16Unorm, .bgr5A1Unorm, .a1bgr5Unorm, .abgr4Unorm:
+        case .r16Uint, .bgr5A1Unorm, .a1bgr5Unorm, .abgr4Unorm:
             return 2
         default:
             print("Warning: bytesPerPixel not defined for format \(self)")

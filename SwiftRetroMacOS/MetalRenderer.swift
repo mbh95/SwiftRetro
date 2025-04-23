@@ -14,6 +14,7 @@ class MetalRenderer {
     private var texture: MTLTexture?
     private var vertices: MTLBuffer?
     private var texCoords: MTLBuffer?
+    private var pixelFormat: retro_pixel_format = RETRO_PIXEL_FORMAT_0RGB1555
 
     init() {
         guard
@@ -24,7 +25,7 @@ class MetalRenderer {
         }
         self.device = device
         self.commandQueue = commandQueue
-        setupPipelineAndVertices()
+        setupBuffers()
     }
 
     func setupTexture(width: Int, height: Int, format: MTLPixelFormat) {
@@ -70,7 +71,7 @@ class MetalRenderer {
     }
 
     // Setup vertex/texCoord buffers and pipeline state
-    func setupPipelineAndVertices() {
+    func setupBuffers() {
         // Simple Quad Vertices (covers -1 to 1 in normalized device coords)
         let vertexData: [Float] = [
             // Triangle 1
@@ -104,17 +105,42 @@ class MetalRenderer {
             length: texCoordData.count * MemoryLayout<Float>.size,
             options: []
         )
+    }
+
+    func setupPipeline(format: retro_pixel_format) {
+        guard format != RETRO_PIXEL_FORMAT_UNKNOWN,
+            pipelineState == nil || pixelFormat != format
+        else {
+            return
+        }
+        // Switch the to the new format
+        print("Switching to pipeline for format \(format)")
+        pixelFormat = format
 
         // Shaders
         let library = device.makeDefaultLibrary()!  // Assumes shaders are in default library
         let vertexFunction = library.makeFunction(name: "vertexShader")
-        let fragmentFunction = library.makeFunction(name: "fragmentShader")
-
-        // Pipeline state
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = vertexFunction
-        pipelineDescriptor.fragmentFunction = fragmentFunction
         pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+
+        switch pixelFormat {
+        case RETRO_PIXEL_FORMAT_0RGB1555:
+            pipelineDescriptor.fragmentFunction = library.makeFunction(
+                name: "fragmentShader_0RGB1555"
+            )
+        case RETRO_PIXEL_FORMAT_XRGB8888:
+            pipelineDescriptor.fragmentFunction = library.makeFunction(
+                name: "fragmentShader_XRGB8888"
+            )
+        case RETRO_PIXEL_FORMAT_RGB565:
+            pipelineDescriptor.fragmentFunction = library.makeFunction(
+                name: "fragmentShader_RGB565"
+            )
+
+        default:
+            fatalError("Unsupported pixel format \(pixelFormat)")
+        }
 
         do {
             pipelineState = try device.makeRenderPipelineState(
@@ -181,6 +207,7 @@ class MetalRenderer {
         }
 
         updateTexture(frame: frame)
+        setupPipeline(format: frame.retroPixelFormat)
 
         // Render
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
@@ -189,7 +216,10 @@ class MetalRenderer {
                 descriptor: renderPassDescriptor
             ),
             let currentDrawable = view.currentDrawable,  // The final target to present
-            let pipeState = pipelineState
+            let pipeState = pipelineState,
+            let vertices = vertices,
+            let texCoords = texCoords,
+            let texture = texture
         else {  // Use the stored pipeline state
             print(
                 "Draw: Failed to get command buffer, render pass descriptor, or encoder."
