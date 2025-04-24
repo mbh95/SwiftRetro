@@ -42,9 +42,9 @@ fragment float4 fragmentShader_0RGB1555(
         
     // Decode 0RGB1555
     // 0 RRRRR GGGGG BBBBB
-    float r = float((pixel >> 10) & 0x1F) / 31.0;
-    float g = float((pixel >> 5)  & 0x1F) / 31.0;
-    float b = float(pixel         & 0x1F) / 31.0;
+    float r = float((pixel >> 10) & 0x1F) / 0x1F;
+    float g = float((pixel >> 5)  & 0x1F) / 0x1F;
+    float b = float(pixel         & 0x1F) / 0x1F;
     
     return float4(r,g,b, 1.0);
 }
@@ -60,13 +60,9 @@ fragment float4 fragmentShader_RGB565(
     
     // Decode RGB565
     // RRRRR GGGGGG BBBBB
-    uint16_t r5 = (pixel >> 11) & 0x1F;
-    uint16_t g5 = (pixel >> 5)  & 0x3F;
-    uint16_t b5 =  pixel        & 0x1F;
-    
-    float r = r5 / (float) 0x1F;
-    float g = g5 / (float) 0x3F;
-    float b = b5 / (float) 0x1F;
+    float r = float((pixel >> 11) & 0x1F) / 0x1F;
+    float g = float((pixel >> 5)  & 0x3F) / 0x3F;
+    float b = float(pixel         & 0x1F) / 0x1F;
     
     return float4(r, g, b, 1.0);
 }
