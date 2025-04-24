@@ -10,7 +10,10 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = GameViewModel()
-
+    
+    private var initialCorePath: String? = "mgba_libretro.dylib"
+    private var initialGamePath: String?
+    
     func selectAndLoadCore() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Select Libretro Core (.dylib)"
@@ -86,6 +89,12 @@ struct ContentView: View {
             .padding()
         }
         .frame(minWidth: 700, minHeight: 600)  // Set a reasonable minimum window size
+        .onAppear {
+            guard let corePath = initialCorePath else {return}
+            viewModel.loadCore(corePath: corePath)
+            guard let gamePath = initialGamePath else {return}
+            viewModel.loadGame(gamePath: gamePath)
+        }
         .onDisappear {
             // Ensure cleanup when the window closes
             viewModel.unload()
