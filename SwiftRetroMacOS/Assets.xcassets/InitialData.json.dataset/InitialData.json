@@ -1,0 +1,27 @@
+[
+  {
+    "systemName": "Game Boy Advance",
+    "fileExtensions": ["gba", "agb"],
+    "cores": [
+      {
+        "coreName": "mGBA",
+        "corePath": "mgba_libretro.dylib" // Or the expected location/name
+      }
+    ]
+  },
+  {
+    "systemName": "Nintendo Entertainment System",
+    "fileExtensions": ["nes"],
+    "cores": [
+      {
+        "coreName": "Nestopia UE",
+        "corePath": "nestopia_libretro.dylib"
+      },
+      {
+         "coreName": "FCEUmm",
+         "corePath": "fceumm_libretro.dylib"
+      }
+    ]
+  }
+  // Add other systems and cores
+]

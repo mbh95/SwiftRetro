@@ -44,13 +44,14 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C9B2E3AF2DB9A58900618B40 /* CopyFiles */ = {
+		C9B2E3AF2DB9A58900618B40 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -460,14 +461,18 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Bundled Cores/2048_libretro.dylib",
+				"Bundled Cores/bsnes_libretro.dylib",
+				"Bundled Cores/fceumm_libretro.dylib",
 				"Bundled Cores/mgba_libretro.dylib",
-				ContentView.swift,
-				GameView.swift,
-				GameViewModel.swift,
-				MetalExtensions.swift,
-				MetalRenderer.swift,
-				Shaders.metal,
+				"Bundled Cores/nestopia_libretro.dylib",
+				"Bundled Cores/snes9x_libretro.dylib",
+				Metal/MetalExtensions.swift,
+				Metal/MetalRenderer.swift,
+				Metal/Shaders.metal,
 				SwiftRetroMacOSApp.swift,
+				View/ContentView.swift,
+				View/GameView.swift,
+				View/GameViewModel.swift,
 			);
 			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
 		};
@@ -506,13 +511,16 @@
 		C9DD7EDD2DA7771700698CE9 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetroMacOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				ContentView.swift,
-				GameView.swift,
-				GameViewModel.swift,
-				MetalExtensions.swift,
-				MetalRenderer.swift,
-				Shaders.metal,
+				Data/CoreDataStack.swift,
+				Data/InitialData.json,
+				Data/Model.xcdatamodeld,
+				Metal/MetalExtensions.swift,
+				Metal/MetalRenderer.swift,
+				Metal/Shaders.metal,
 				SwiftRetroMacOSApp.swift,
+				View/ContentView.swift,
+				View/GameView.swift,
+				View/GameViewModel.swift,
 			);
 			target = C9A879D92DA76DF400AAE9BB /* SwiftRetroMacOS */;
 		};
@@ -549,12 +557,20 @@
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			attributesByRelativePath = {
 				"Bundled Cores/2048_libretro.dylib" = (CodeSignOnCopy, );
+				"Bundled Cores/bsnes_libretro.dylib" = (CodeSignOnCopy, );
+				"Bundled Cores/fceumm_libretro.dylib" = (CodeSignOnCopy, );
 				"Bundled Cores/mgba_libretro.dylib" = (CodeSignOnCopy, );
+				"Bundled Cores/nestopia_libretro.dylib" = (CodeSignOnCopy, );
+				"Bundled Cores/snes9x_libretro.dylib" = (CodeSignOnCopy, );
 			};
-			buildPhase = C9B2E3AF2DB9A58900618B40 /* CopyFiles */;
+			buildPhase = C9B2E3AF2DB9A58900618B40 /* Copy Files */;
 			membershipExceptions = (
 				"Bundled Cores/2048_libretro.dylib",
+				"Bundled Cores/bsnes_libretro.dylib",
+				"Bundled Cores/fceumm_libretro.dylib",
 				"Bundled Cores/mgba_libretro.dylib",
+				"Bundled Cores/nestopia_libretro.dylib",
+				"Bundled Cores/snes9x_libretro.dylib",
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -2061,7 +2077,8 @@
 			buildPhases = (
 				C9A879D62DA76DF400AAE9BB /* Sources */,
 				C9A879D72DA76DF400AAE9BB /* Frameworks */,
-				C9B2E3AF2DB9A58900618B40 /* CopyFiles */,
+				C9B2E3AF2DB9A58900618B40 /* Copy Files */,
+				C91988B72DBB215B003EDFF5 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -2122,6 +2139,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C91988B72DBB215B003EDFF5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9A879B32DA751B200AAE9BB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2338,6 +2362,70 @@
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
@@ -2408,6 +2496,70 @@
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 				);
@@ -2562,6 +2714,13 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mbh.SwiftRetroMacOS;
@@ -2589,6 +2748,13 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;

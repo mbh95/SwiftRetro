@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788" systemVersion="24E263" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="RetroCore" representedClassName="RetroCore" syncable="YES" codeGenerationType="class">
+        <attribute name="coreId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="coreName" optional="YES" attributeType="String"/>
+        <attribute name="corePath" optional="YES" attributeType="URI"/>
+        <relationship name="system" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RetroSystem" inverseName="cores" inverseEntity="RetroSystem"/>
+    </entity>
+    <entity name="RetroFileExtension" representedClassName="RetroFileExtension" syncable="YES" codeGenerationType="class">
+        <attribute name="extensionString" attributeType="String"/>
+        <relationship name="system" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RetroSystem" inverseName="fileExtensions" inverseEntity="RetroSystem"/>
+    </entity>
+    <entity name="RetroGame" representedClassName="RetroGame" syncable="YES" codeGenerationType="class">
+        <attribute name="gameId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="gamePath" optional="YES" attributeType="URI"/>
+        <attribute name="gameTitle" optional="YES" attributeType="String"/>
+        <relationship name="coreOverride" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RetroCore"/>
+        <relationship name="system" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RetroSystem" inverseName="games" inverseEntity="RetroSystem"/>
+    </entity>
+    <entity name="RetroSystem" representedClassName="RetroSystem" syncable="YES" codeGenerationType="class">
+        <attribute name="systemId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="systemName" optional="YES" attributeType="String"/>
+        <relationship name="cores" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RetroCore" inverseName="system" inverseEntity="RetroCore"/>
+        <relationship name="fileExtensions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RetroFileExtension" inverseName="system" inverseEntity="RetroFileExtension"/>
+        <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RetroGame" inverseName="system" inverseEntity="RetroGame"/>
+    </entity>
+</model>
