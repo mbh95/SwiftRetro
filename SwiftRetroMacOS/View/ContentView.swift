@@ -52,7 +52,7 @@ struct ContentView: View {
                             }
                             print("LOADING")
                             print("CORE: %@", corePath)
-                            print("GAME: %@", game.gamePath!.path())
+                            print("GAME: %@", game.gameTitle ?? "Unknown Game")
                             viewModel.loadCore(
                                 corePath: "mgba_libretro.dylib"
                             )

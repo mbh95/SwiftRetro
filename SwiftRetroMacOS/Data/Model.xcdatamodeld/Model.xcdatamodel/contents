@@ -13,7 +13,6 @@
     <entity name="RetroGame" representedClassName="RetroGame" syncable="YES" codeGenerationType="class">
         <attribute name="gameBookmarkData" optional="YES" attributeType="Binary"/>
         <attribute name="gameId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="gamePath" optional="YES" attributeType="URI"/>
         <attribute name="gameTitle" optional="YES" attributeType="String"/>
         <relationship name="coreOverride" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RetroCore"/>
         <relationship name="system" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RetroSystem" inverseName="games" inverseEntity="RetroSystem"/>

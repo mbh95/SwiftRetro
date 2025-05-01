@@ -45,11 +45,8 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         coreStatus = "Core loaded"
     }
 
-    func loadGame(game: RetroGame) {
-        coreStatus = "Loading game..."
-
+    func resolveGameUrl(game: RetroGame) -> URL? {
         do {
-
             var isStale = false
             let resolvedUrl = try URL(
                 resolvingBookmarkData: game.gameBookmarkData!,
@@ -57,35 +54,42 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
                 relativeTo: nil,
                 bookmarkDataIsStale: &isStale
             )
-
             if isStale {
                 print(
-                    "Warning: Bookmark data is stale for \(game.gameTitle ?? "Untitled Game"). Re-creating."
+                    "Warning: Bookmark data is stale for \(game.gameTitle ?? "Untitled Game")."
                 )
             }
-
-            guard let core = self.core,
-                resolvedUrl.startAccessingSecurityScopedResource(),
-                core.loadGame(resolvedUrl.path)
-            else {
-                coreStatus = "Error: Failed to load game"
-                print(
-                    "Failed to load game at \(game.gamePath?.path ?? ""))"
-                )
-                return
-            }
-            resolvedUrl.stopAccessingSecurityScopedResource()
-
-            coreStatus =
-                "Game Loaded: \(game.gameTitle ?? "Unknown Game")"
-            print("Game loaded successfully")
-
+            return resolvedUrl
         } catch {
             print(
                 "Error resolving bookmark data for \(game.gameTitle ?? "Untitled Game"): \(error)"
             )
             // TODO: Prompt user to re-import game?
         }
+        return nil
+    }
+
+    func loadGame(game: RetroGame) {
+        coreStatus = "Loading game..."
+
+        
+        guard let core = self.core,
+            let resolvedUrl = resolveGameUrl(game: game),
+            resolvedUrl.startAccessingSecurityScopedResource(),
+            core.loadGame(resolvedUrl.path)
+        else {
+            coreStatus = "Error: Failed to load game"
+            print(
+                "Failed to load game \(game))"
+            )
+            return
+        }
+        resolvedUrl.stopAccessingSecurityScopedResource()
+
+        coreStatus =
+            "Game Loaded: \(game.gameTitle ?? "Unknown Game")"
+        print("Game loaded successfully")
+
     }
 
     func canStart() -> Bool {

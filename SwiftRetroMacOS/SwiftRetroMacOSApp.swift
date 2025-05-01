@@ -84,7 +84,6 @@ struct SwiftRetroMacOSApp: App {
 
         let newGame = RetroGame(context: context)
         newGame.gameId = UUID()
-        newGame.gamePath = url
         newGame.gameTitle = url.deletingPathExtension().lastPathComponent
         newGame.system = system
 

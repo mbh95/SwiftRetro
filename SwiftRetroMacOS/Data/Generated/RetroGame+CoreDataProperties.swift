@@ -17,7 +17,6 @@ extension RetroGame {
     }
 
     @NSManaged public var gameId: UUID?
-    @NSManaged public var gamePath: URL?
     @NSManaged public var gameTitle: String?
     @NSManaged public var gameBookmarkData: Data?
     @NSManaged public var coreOverride: RetroCore?
