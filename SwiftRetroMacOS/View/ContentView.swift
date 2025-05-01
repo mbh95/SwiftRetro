@@ -14,99 +14,70 @@ struct ContentView: View {
     private var systems: FetchedResults<RetroSystem>
 
     @StateObject private var viewModel = GameViewModel()
-    @State private var selectedSystem: RetroSystem?  // <-- State to track selected system
-
-    func selectAndLoadCore() {
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Select Libretro Core (.dylib)"
-        openPanel.showsHiddenFiles = false
-        openPanel.canChooseDirectories = false
-        openPanel.canChooseFiles = true
-        openPanel.allowsMultipleSelection = false
-
-        guard openPanel.runModal() == .OK,
-            let coreUrl = openPanel.url
-        else {
-            return
-        }
-
-        viewModel.loadCore(corePath: coreUrl.path)
-    }
-
-    func selectAndLoadGame() {
-        guard viewModel.coreIsLoaded else {
-            return
-        }
-
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Select Game File"
-        openPanel.canChooseFiles = true
-        openPanel.canChooseDirectories = false
-        openPanel.allowsMultipleSelection = false
-
-        guard openPanel.runModal() == .OK,
-            let gameUrl = openPanel.url
-        else {
-            return
-        }
-
-        viewModel.loadGame(gamePath: gameUrl.path)
-    }
+    @State private var selectedSystem: RetroSystem?
 
     var body: some View {
         NavigationSplitView {
-            // --- Sidebar ---
             List(systems, id: \.self, selection: $selectedSystem) {
                 system in
                 Text(system.systemName ?? "Unknown System")
             }
             .navigationSplitViewColumnWidth(min: 180, ideal: 200)
+            .navigationTitle("Systems")
 
         } detail: {
-            VStack {
-                Text("SwiftRetro for macOS")
-                    .font(.headline)
+            if let system = selectedSystem {
+                VStack(alignment: .leading) {
+                    Text(system.systemName ?? "Unknown System")
+                        .font(.largeTitle)
+                        .padding(.bottom, 5)
 
-                Text(selectedSystem?.systemName ?? "No System Selected")
-                    .font(.title2)
-                    .padding(.bottom)
+                    Text("Core Status: \(viewModel.coreStatus)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .padding(.bottom)
 
-                Text("Core Status: \(viewModel.coreStatus)")
-                    .padding(.bottom)
+                    GameGridView(selectedSystem: system)
+                        .onGameLaunch { game, system in
+                            let firstCore =
+                                (system.cores?.allObjects as? [RetroCore])?
+                                .first
 
-                GameView(viewModel: viewModel)
-                    .frame(
-                        width: CGFloat(viewModel.latestFrame.width),
-                        height: CGFloat(viewModel.latestFrame.height)
-                    )
-                    .border(Color.gray)
+                            guard let corePath = firstCore?.corePath?.path()
+                            else {
+                                print(
+                                    "No cores available for \(system.systemName ?? "Unknown System")"
+                                )
+                                return
+                            }
+                            print("LOADING")
+                            print("CORE: %@", corePath)
+                            print("GAME: %@", game.gamePath!.path())
+                            viewModel.loadCore(
+                                corePath: "mgba_libretro.dylib"
+                            )
+                            viewModel.loadGame(game: game)
+                            viewModel.startCore()
+                        }
+                        .frame(maxHeight: .infinity)
 
-                HStack(spacing: 20) {
-                    Button("Load Core") {
-                        selectAndLoadCore()
+                    Spacer()
+
+                    if viewModel.isRunning {
+                        GameView(viewModel: viewModel)
+                            .frame(
+                                width: CGFloat(viewModel.latestFrame.width),
+                                height: CGFloat(viewModel.latestFrame.height)
+                            )
+                            .border(Color.gray)
+                            .padding(.bottom)
                     }
-                    .disabled(selectedSystem == nil)
-
-                    Button("Load ROM") {
-                        selectAndLoadGame()
-                    }
-                    .disabled(
-                        viewModel.coreIsLoaded == false
-                    )
-
-                    Button("Unload") {
-                        viewModel.unload()
-                    }
-                    .disabled(viewModel.coreIsLoaded == false)
-
-                    Button("Start") {
-                        viewModel.startCore()
-                    }
-                    .disabled(viewModel.canStart() == false)
                 }
-                .padding()
+            } else {
+                Text("Select a system from the list")
+                    .font(.title)
+                    .foregroundColor(.secondary)
             }
-            .frame(minWidth: 500, minHeight: 600)
         }
         .onAppear {
             if selectedSystem == nil {
@@ -130,7 +101,6 @@ struct ContentView: View {
     }
 }
 
-// --- Previews (Keep as they are) ---
 struct MacContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()

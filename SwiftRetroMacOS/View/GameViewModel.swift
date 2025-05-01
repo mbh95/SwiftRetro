@@ -45,19 +45,47 @@ class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
         coreStatus = "Core loaded"
     }
 
-    func loadGame(gamePath: String) {
+    func loadGame(game: RetroGame) {
         coreStatus = "Loading game..."
-        guard let core = self.core,
-            core.loadGame(gamePath)
-        else {
-            coreStatus = "Error: Failed to load game"
-            print("Failed to load game at \(gamePath)")
-            return
-        }
 
-        coreStatus =
-            "Game Loaded: \(gamePath.split(separator: "/").last ?? "")"
-        print("Game loaded successfully")
+        do {
+
+            var isStale = false
+            let resolvedUrl = try URL(
+                resolvingBookmarkData: game.gameBookmarkData!,
+                options: .withSecurityScope,
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            )
+
+            if isStale {
+                print(
+                    "Warning: Bookmark data is stale for \(game.gameTitle ?? "Untitled Game"). Re-creating."
+                )
+            }
+
+            guard let core = self.core,
+                resolvedUrl.startAccessingSecurityScopedResource(),
+                core.loadGame(resolvedUrl.path)
+            else {
+                coreStatus = "Error: Failed to load game"
+                print(
+                    "Failed to load game at \(game.gamePath?.path ?? ""))"
+                )
+                return
+            }
+            resolvedUrl.stopAccessingSecurityScopedResource()
+
+            coreStatus =
+                "Game Loaded: \(game.gameTitle ?? "Unknown Game")"
+            print("Game loaded successfully")
+
+        } catch {
+            print(
+                "Error resolving bookmark data for \(game.gameTitle ?? "Untitled Game"): \(error)"
+            )
+            // TODO: Prompt user to re-import game?
+        }
     }
 
     func canStart() -> Bool {

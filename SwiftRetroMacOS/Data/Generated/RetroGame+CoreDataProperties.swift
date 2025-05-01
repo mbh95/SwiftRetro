@@ -2,7 +2,7 @@
 //  RetroGame+CoreDataProperties.swift
 //  SwiftRetroMacOS
 //
-//  Created by Matt Hammond on 4/24/25.
+//  Created by Matt Hammond on 5/1/25.
 //
 //
 
@@ -19,6 +19,7 @@ extension RetroGame {
     @NSManaged public var gameId: UUID?
     @NSManaged public var gamePath: URL?
     @NSManaged public var gameTitle: String?
+    @NSManaged public var gameBookmarkData: Data?
     @NSManaged public var coreOverride: RetroCore?
     @NSManaged public var system: RetroSystem?
 
