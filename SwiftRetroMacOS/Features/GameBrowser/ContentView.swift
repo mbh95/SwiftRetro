@@ -50,6 +50,7 @@ struct ContentView: View {
                                 )
                                 return
                             }
+                            viewModel.unload()
                             viewModel.loadCore(corePath: corePath)
                             viewModel.loadGame(game: game)
                             viewModel.startCore()
