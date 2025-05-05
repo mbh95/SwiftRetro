@@ -13,7 +13,7 @@ struct ContentView: View {
     )
     private var systems: FetchedResults<RetroSystem>
 
-    @StateObject private var viewModel = GameViewModel()
+    @StateObject private var viewModel = GamePlayerModel()
     @State private var selectedSystem: RetroSystem?
 
     var body: some View {
@@ -50,12 +50,7 @@ struct ContentView: View {
                                 )
                                 return
                             }
-                            print("LOADING")
-                            print("CORE: %@", corePath)
-                            print("GAME: %@", game.gameTitle ?? "Unknown Game")
-                            viewModel.loadCore(
-                                corePath: "mgba_libretro.dylib"
-                            )
+                            viewModel.loadCore(corePath: corePath)
                             viewModel.loadGame(game: game)
                             viewModel.startCore()
                         }
@@ -64,7 +59,7 @@ struct ContentView: View {
                     Spacer()
 
                     if viewModel.isRunning {
-                        GameView(viewModel: viewModel)
+                        GamePlayerView(viewModel: viewModel)
                             .frame(
                                 width: CGFloat(viewModel.latestFrame.width),
                                 height: CGFloat(viewModel.latestFrame.height)

@@ -1,5 +1,5 @@
 //
-//  GameViewModel.swift
+//  GamePlayerModel.swift
 //  SwiftRetroMacOS
 //
 //  Created by Matt Hammond on 4/9/25.
@@ -17,7 +17,7 @@ struct Frame {
     var retroPixelFormat: retro_pixel_format = RETRO_PIXEL_FORMAT_0RGB1555
 }
 
-class GameViewModel: NSObject, ObservableObject, LibretroCoreDelegate {
+class GamePlayerModel: NSObject, ObservableObject, LibretroCoreDelegate {
     @Published var coreStatus: String = "Idle"
     @Published var coreIsLoaded: Bool = false
     @Published var isRunning = false

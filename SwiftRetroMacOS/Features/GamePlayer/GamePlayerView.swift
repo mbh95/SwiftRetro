@@ -1,5 +1,5 @@
 //
-//  GameView.swift
+//  GamePlayerView.swift
 //  SwiftRetroMacOS
 //
 //  Created by Matt Hammond on 4/23/25.
@@ -9,8 +9,8 @@ import Foundation
 import MetalKit
 import SwiftUI
 
-struct GameView: NSViewRepresentable {
-    @ObservedObject var viewModel: GameViewModel
+struct GamePlayerView: NSViewRepresentable {
+    @ObservedObject var viewModel: GamePlayerModel
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self, viewModel: viewModel)
@@ -40,11 +40,11 @@ struct GameView: NSViewRepresentable {
 
     // MARK: - Coordinator (Handles Metal Logic & Delegate)
     class Coordinator: NSObject, MTKViewDelegate {
-        var parent: GameView
-        var viewModel: GameViewModel
+        var parent: GamePlayerView
+        var viewModel: GamePlayerModel
         var renderer: MetalRenderer
 
-        init(_ parent: GameView, viewModel: GameViewModel) {
+        init(_ parent: GamePlayerView, viewModel: GamePlayerModel) {
             self.parent = parent
             self.viewModel = viewModel
             self.renderer = MetalRenderer()

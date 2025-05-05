@@ -48,7 +48,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 16;
 			files = (
 			);
 			name = "Copy Files";
@@ -460,20 +460,20 @@
 		C9338E992DB09F3D00435074 /* Exceptions for "SwiftRetroMacOS" folder in "SwiftRetro iOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"Bundled Cores/2048_libretro.dylib",
-				"Bundled Cores/bsnes_libretro.dylib",
-				"Bundled Cores/fceumm_libretro.dylib",
-				"Bundled Cores/mgba_libretro.dylib",
-				"Bundled Cores/nestopia_libretro.dylib",
-				"Bundled Cores/snes9x_libretro.dylib",
-				Metal/MetalExtensions.swift,
-				Metal/MetalRenderer.swift,
-				Metal/Shaders.metal,
-				SwiftRetroMacOSApp.swift,
-				View/ContentView.swift,
-				View/GameGridView.swift,
-				View/GameView.swift,
-				View/GameViewModel.swift,
+				Features/GameBrowser/ContentView.swift,
+				Features/GameBrowser/GameGridView.swift,
+				Features/GamePlayer/GamePlayerModel.swift,
+				Features/GamePlayer/GamePlayerView.swift,
+				Features/GamePlayer/Metal/MetalExtensions.swift,
+				Features/GamePlayer/Metal/MetalRenderer.swift,
+				Features/GamePlayer/Metal/Shaders.metal,
+				"Resources/Bundled Cores/2048_libretro.dylib",
+				"Resources/Bundled Cores/bsnes_libretro.dylib",
+				"Resources/Bundled Cores/fceumm_libretro.dylib",
+				"Resources/Bundled Cores/mgba_libretro.dylib",
+				"Resources/Bundled Cores/nestopia_libretro.dylib",
+				"Resources/Bundled Cores/snes9x_libretro.dylib",
+				SwiftRetroMacOS.swift,
 			);
 			target = C9A8766C2DA5525E00AAE9BB /* SwiftRetro iOS */;
 		};
@@ -513,16 +513,17 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Data/CoreDataStack.swift,
-				Data/InitialData.json,
 				Data/Model.xcdatamodeld,
-				Metal/MetalExtensions.swift,
-				Metal/MetalRenderer.swift,
-				Metal/Shaders.metal,
-				SwiftRetroMacOSApp.swift,
-				View/ContentView.swift,
-				View/GameGridView.swift,
-				View/GameView.swift,
-				View/GameViewModel.swift,
+				Features/GameBrowser/ContentView.swift,
+				Features/GameBrowser/GameGridView.swift,
+				Features/GameImporter/GameImporter.swift,
+				Features/GamePlayer/GamePlayerModel.swift,
+				Features/GamePlayer/GamePlayerView.swift,
+				Features/GamePlayer/Metal/MetalExtensions.swift,
+				Features/GamePlayer/Metal/MetalRenderer.swift,
+				Features/GamePlayer/Metal/Shaders.metal,
+				Resources/InitialData.json,
+				SwiftRetroMacOS.swift,
 			);
 			target = C9A879D92DA76DF400AAE9BB /* SwiftRetroMacOS */;
 		};
@@ -532,11 +533,11 @@
 		C933A4EC2DB0A9CB00435074 /* Exceptions for "SwiftRetroMacOS" folder in "Copy Files" phase from "SwiftRetro CLI" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			attributesByRelativePath = {
-				"Bundled Cores/2048_libretro.dylib" = (CodeSignOnCopy, );
+				"Resources/Bundled Cores/2048_libretro.dylib" = (CodeSignOnCopy, );
 			};
 			buildPhase = C9A879862DA61A9E00AAE9BB /* CopyFiles */;
 			membershipExceptions = (
-				"Bundled Cores/2048_libretro.dylib",
+				"Resources/Bundled Cores/2048_libretro.dylib",
 			);
 		};
 		C933A4F52DB0AA1000435074 /* Exceptions for "SwiftRetro" folder in "Embed Frameworks" phase from "SwiftRetro iOS" target */ = {
@@ -558,21 +559,21 @@
 		C9B2E3B22DB9A59300618B40 /* Exceptions for "SwiftRetroMacOS" folder in "Copy Files" phase from "SwiftRetroMacOS" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			attributesByRelativePath = {
-				"Bundled Cores/2048_libretro.dylib" = (CodeSignOnCopy, );
-				"Bundled Cores/bsnes_libretro.dylib" = (CodeSignOnCopy, );
-				"Bundled Cores/fceumm_libretro.dylib" = (CodeSignOnCopy, );
-				"Bundled Cores/mgba_libretro.dylib" = (CodeSignOnCopy, );
-				"Bundled Cores/nestopia_libretro.dylib" = (CodeSignOnCopy, );
-				"Bundled Cores/snes9x_libretro.dylib" = (CodeSignOnCopy, );
+				"Resources/Bundled Cores/2048_libretro.dylib" = (CodeSignOnCopy, );
+				"Resources/Bundled Cores/bsnes_libretro.dylib" = (CodeSignOnCopy, );
+				"Resources/Bundled Cores/fceumm_libretro.dylib" = (CodeSignOnCopy, );
+				"Resources/Bundled Cores/mgba_libretro.dylib" = (CodeSignOnCopy, );
+				"Resources/Bundled Cores/nestopia_libretro.dylib" = (CodeSignOnCopy, );
+				"Resources/Bundled Cores/snes9x_libretro.dylib" = (CodeSignOnCopy, );
 			};
 			buildPhase = C9B2E3AF2DB9A58900618B40 /* Copy Files */;
 			membershipExceptions = (
-				"Bundled Cores/2048_libretro.dylib",
-				"Bundled Cores/bsnes_libretro.dylib",
-				"Bundled Cores/fceumm_libretro.dylib",
-				"Bundled Cores/mgba_libretro.dylib",
-				"Bundled Cores/nestopia_libretro.dylib",
-				"Bundled Cores/snes9x_libretro.dylib",
+				"Resources/Bundled Cores/2048_libretro.dylib",
+				"Resources/Bundled Cores/bsnes_libretro.dylib",
+				"Resources/Bundled Cores/fceumm_libretro.dylib",
+				"Resources/Bundled Cores/mgba_libretro.dylib",
+				"Resources/Bundled Cores/nestopia_libretro.dylib",
+				"Resources/Bundled Cores/snes9x_libretro.dylib",
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -2428,6 +2429,16 @@
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;
@@ -2564,6 +2575,16 @@
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
 					"$(PROJECT_DIR)/SwiftRetroMacOS/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetro/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
+					"$(PROJECT_DIR)/SwiftRetroMacOS/Resources/Bundled\\ Cores",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.3;
 				MARKETING_VERSION = 1.0;

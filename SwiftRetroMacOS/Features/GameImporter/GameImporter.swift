@@ -1,32 +1,18 @@
 //
-//  SwiftRetroMacOSApp.swift
+//  GameImporter.swift
 //  SwiftRetroMacOS
 //
-//  Created by Matt Hammond on 4/9/25.
+//  Created by Matt Hammond on 5/4/25.
 //
 
+import Foundation
 import SwiftUI
 
-@main
-struct SwiftRetroMacOSApp: App {
+class GameImporter {
+    private let context: NSManagedObjectContext
 
-    @StateObject private var coreDataStack = CoreDataStack.shared
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(
-                    \.managedObjectContext,
-                    coreDataStack.persistentContainer.viewContext
-                )
-        }
-        .commands {
-            CommandGroup(replacing: .newItem) {
-                Button("Import Games...") {
-                    openImportPanel()
-                }
-            }
-        }
+    init(context: NSManagedObjectContext) {
+        self.context = context
     }
 
     func openImportPanel() {
@@ -41,7 +27,7 @@ struct SwiftRetroMacOSApp: App {
         for gameUrl in openPanel.urls {
             importGame(
                 url: gameUrl,
-                context: coreDataStack.persistentContainer.viewContext
+                context: context
             )
         }
         CoreDataStack.shared.save()
@@ -94,7 +80,7 @@ struct SwiftRetroMacOSApp: App {
                 relativeTo: nil
             )
             newGame.gameBookmarkData = bookmarkData
-            
+
             print("Successfully created bookmark for: \(url.lastPathComponent)")
         } catch {
             print("Failed to create bookmark data for \(url.path): \(error)")
