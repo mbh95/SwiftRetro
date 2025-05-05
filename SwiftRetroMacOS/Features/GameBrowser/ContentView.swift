@@ -4,6 +4,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.openWindow) private var openWindow
 
     // Fetch all systems, sorted by name
     @FetchRequest(
@@ -39,21 +40,26 @@ struct ContentView: View {
 
                     GameGridView(selectedSystem: system)
                         .onGameLaunch { game, system in
-                            let firstCore =
-                                (system.cores?.allObjects as? [RetroCore])?
-                                .first
-
-                            guard let corePath = firstCore?.corePath?.path()
+                            guard
+                                let core =
+                                    (system.cores?.allObjects as? [RetroCore])?
+                                    .first
                             else {
                                 print(
                                     "No cores available for \(system.systemName ?? "Unknown System")"
                                 )
                                 return
                             }
+
                             viewModel.unload()
-                            viewModel.loadCore(corePath: corePath)
-                            viewModel.loadGame(game: game)
+                            guard viewModel.loadCore(coreToLoad: core),
+                                viewModel.loadGame(gameToLoad: game)
+                            else {
+                                print("Failed to load core/game.")
+                                return
+                            }
                             viewModel.startCore()
+
                         }
                         .frame(maxHeight: .infinity)
 

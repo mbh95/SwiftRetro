@@ -28,21 +28,24 @@ class GamePlayerModel: NSObject, ObservableObject, LibretroCoreDelegate {
 
     // MARK: - Core/ROM Loading
 
-    func loadCore(corePath: String) {
+    func loadCore(coreToLoad: RetroCore) -> Bool {
         coreStatus = "Loading Core..."
         coreIsLoaded = false
-        guard let loadedCore = LibretroCore(corePath: corePath),
+        guard
+            let corePath = coreToLoad.corePath?.path(),
+            let loadedCore = LibretroCore(corePath: corePath),
             loadedCore.load()
         else {
             coreStatus = "Error: Failed to load core"
-            print("Failed to load core at \(corePath)")
-            return
+            print("Failed to load core \(coreToLoad)")
+            return false
         }
 
         core = loadedCore
         core?.delegate = self
         coreIsLoaded = true
         coreStatus = "Core loaded"
+        return true
     }
 
     func resolveGameUrl(game: RetroGame) -> URL? {
@@ -69,26 +72,26 @@ class GamePlayerModel: NSObject, ObservableObject, LibretroCoreDelegate {
         return nil
     }
 
-    func loadGame(game: RetroGame) {
+    func loadGame(gameToLoad: RetroGame) -> Bool {
         coreStatus = "Loading game..."
 
-        
         guard let core = self.core,
-            let resolvedUrl = resolveGameUrl(game: game),
+            let resolvedUrl = resolveGameUrl(game: gameToLoad),
             resolvedUrl.startAccessingSecurityScopedResource(),
             core.loadGame(resolvedUrl.path)
         else {
             coreStatus = "Error: Failed to load game"
             print(
-                "Failed to load game \(game))"
+                "Failed to load game \(gameToLoad))"
             )
-            return
+            return false
         }
         resolvedUrl.stopAccessingSecurityScopedResource()
 
         coreStatus =
-            "Game Loaded: \(game.gameTitle ?? "Unknown Game")"
-        print("Game loaded successfully")
+            "Game Loaded: \(gameToLoad.gameTitle ?? "Unknown Game")"
+        print("Game Loaded: \(gameToLoad.gameTitle ?? "Unknown Game")")
+        return true
 
     }
 
