@@ -11,6 +11,7 @@ import SwiftUI
 struct SwiftRetroMacOSApp: App {
 
     @StateObject private var coreDataStack = CoreDataStack.shared
+    @StateObject private var gamePlayerModel = GamePlayerModel()
 
     private var gameImporter: GameImporter = GameImporter(
         context: CoreDataStack.shared.context
@@ -23,6 +24,7 @@ struct SwiftRetroMacOSApp: App {
                     \.managedObjectContext,
                     coreDataStack.persistentContainer.viewContext
                 )
+                .environmentObject(gamePlayerModel)
         }
         .commands {
             CommandGroup(replacing: .newItem) {
@@ -31,6 +33,10 @@ struct SwiftRetroMacOSApp: App {
                 }
             }
         }
+        Window("Game", id: "game-window") {
+            GamePlayerWindowView()
+                .environmentObject(gamePlayerModel)
+        }.windowResizability(.contentSize)
     }
 
 }

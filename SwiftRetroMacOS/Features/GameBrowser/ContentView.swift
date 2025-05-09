@@ -14,7 +14,7 @@ struct ContentView: View {
     )
     private var systems: FetchedResults<RetroSystem>
 
-    @StateObject private var viewModel = GamePlayerModel()
+    @EnvironmentObject var viewModel: GamePlayerModel
     @State private var selectedSystem: RetroSystem?
 
     var body: some View {
@@ -58,22 +58,25 @@ struct ContentView: View {
                                 print("Failed to load core/game.")
                                 return
                             }
+                            
                             viewModel.startCore()
+                            openWindow(id: "game-window")
+                            print("FOOBAR")
 
                         }
                         .frame(maxHeight: .infinity)
 
                     Spacer()
 
-                    if viewModel.isRunning {
-                        GamePlayerView(viewModel: viewModel)
-                            .frame(
-                                width: CGFloat(viewModel.latestFrame.width),
-                                height: CGFloat(viewModel.latestFrame.height)
-                            )
-                            .border(Color.gray)
-                            .padding(.bottom)
-                    }
+//                    if viewModel.isRunning {
+//                        GamePlayerView(viewModel: viewModel)
+//                            .frame(
+//                                width: CGFloat(viewModel.latestFrame.width),
+//                                height: CGFloat(viewModel.latestFrame.height)
+//                            )
+//                            .border(Color.gray)
+//                            .padding(.bottom)
+//                    }
                 }
             } else {
                 Text("Select a system from the list")
