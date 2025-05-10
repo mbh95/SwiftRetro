@@ -37,6 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)loadGame:(NSString *)gamePath;
 - (void)unloadGame;
 - (double)getTargetFps;
+- (double)getAudioSampleRate;
+- (int)getBaseScreenWidth;
+- (int)getBaseScreenHeight;
 
 // Main loop function
 - (void)runFrame;

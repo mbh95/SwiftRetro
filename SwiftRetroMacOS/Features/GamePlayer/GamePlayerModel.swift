@@ -135,6 +135,14 @@ class GamePlayerModel: NSObject, ObservableObject, LibretroCoreDelegate {
         return core?.getTargetFps() ?? 60.0
     }
     
+    func getBaseScreenWidth() -> Int32 {
+        return core?.getBaseScreenWidth() ?? 0
+    }
+    
+    func getBaseScreenHeight() -> Int32 {
+        return core?.getBaseScreenHeight() ?? 0
+    }
+    
     // MARK: - LibretroCoreDelegate Methods
     func renderVideoFrame(
         _ data: UnsafeRawPointer,

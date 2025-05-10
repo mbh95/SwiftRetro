@@ -9,11 +9,10 @@ import Foundation
 import MetalKit
 import SwiftUI
 
-struct GamePlayerView : View {
+struct GamePlayerView: View {
     @EnvironmentObject var viewModel: GamePlayerModel
-    // Optional: Environment action to close the window programmatically
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         VStack {
             GamePlayerViewRepresentable()
@@ -28,6 +27,10 @@ struct GamePlayerView : View {
                     viewModel.handleKeyUp(key: press.key)
                     return .handled
                 }
+                .frame(
+                    minWidth: CGFloat(viewModel.getBaseScreenWidth()),
+                    minHeight: CGFloat(viewModel.getBaseScreenHeight())
+                )
         }
         .onDisappear {
             print("Game window closing, unloading core.")
@@ -38,7 +41,7 @@ struct GamePlayerView : View {
 struct GamePlayerViewRepresentable: NSViewRepresentable {
     @EnvironmentObject var viewModel: GamePlayerModel
     var mtkView: MTKView?
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator(self, viewModel: viewModel)
     }
@@ -75,17 +78,13 @@ struct GamePlayerViewRepresentable: NSViewRepresentable {
         var viewModel: GamePlayerModel
         var renderer: MetalRenderer
 
-        init(_ parent: GamePlayerViewRepresentable, viewModel: GamePlayerModel) {
+        init(_ parent: GamePlayerViewRepresentable, viewModel: GamePlayerModel)
+        {
             self.parent = parent
             self.viewModel = viewModel
             self.renderer = MetalRenderer()
             super.init()
 
-        }
-
-        // Called when the view size changes (e.g., window resize)
-        func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-            print("Drawable size changed to: \(size)")
         }
 
         // Main drawing loop
@@ -99,6 +98,11 @@ struct GamePlayerViewRepresentable: NSViewRepresentable {
             viewModel.runFrame()
 
             renderer.draw(in: view, frame: viewModel.latestFrame)
+        }
+
+        // Called when the view size changes (e.g., window resize)
+        func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+            print("Drawable size changed to: \(size)")
         }
     }
 }

@@ -490,6 +490,19 @@ static int16_t input_state_callback(unsigned port, unsigned device,
     return _systemAvInfo.timing.fps;
 }
 
+- (double) getAudioSampleRate {
+    return _systemAvInfo.timing.sample_rate;
+}
+
+- (int)getBaseScreenWidth {
+    return _systemAvInfo.geometry.base_width;
+}
+
+- (int)getBaseScreenHeight {
+    return _systemAvInfo.geometry.base_height;
+}
+
+
 - (void)runFrame {
     if (!_isActive) {
         os_log_error(logger(), "[RunFrame] Attempted to run an unloaded core.");
