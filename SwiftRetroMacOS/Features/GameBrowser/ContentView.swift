@@ -59,24 +59,12 @@ struct ContentView: View {
                                 return
                             }
                             
-                            viewModel.startCore()
                             openWindow(id: "game-window")
-                            print("FOOBAR")
-
+                            viewModel.startCore()
                         }
                         .frame(maxHeight: .infinity)
 
                     Spacer()
-
-//                    if viewModel.isRunning {
-//                        GamePlayerView(viewModel: viewModel)
-//                            .frame(
-//                                width: CGFloat(viewModel.latestFrame.width),
-//                                height: CGFloat(viewModel.latestFrame.height)
-//                            )
-//                            .border(Color.gray)
-//                            .padding(.bottom)
-//                    }
                 }
             } else {
                 Text("Select a system from the list")
@@ -88,15 +76,6 @@ struct ContentView: View {
             if selectedSystem == nil {
                 selectedSystem = systems.first
             }
-        }
-        .focusable()
-        .onKeyPress(phases: .down) { pressedKey in
-            viewModel.handleKeyDown(key: pressedKey.key)
-            return .handled
-        }
-        .onKeyPress(phases: .up) { pressedKey in
-            viewModel.handleKeyUp(key: pressedKey.key)
-            return .handled
         }
         .onChange(of: selectedSystem) { oldSystem, newSystem in
             print(

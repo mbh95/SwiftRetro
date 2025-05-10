@@ -34,9 +34,10 @@ struct SwiftRetroMacOSApp: App {
             }
         }
         Window("Game", id: "game-window") {
-            GamePlayerWindowView()
+            GamePlayerView()
                 .environmentObject(gamePlayerModel)
         }.windowResizability(.contentSize)
+            
     }
 
 }

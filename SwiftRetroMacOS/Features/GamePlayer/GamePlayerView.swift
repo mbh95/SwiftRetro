@@ -9,9 +9,36 @@ import Foundation
 import MetalKit
 import SwiftUI
 
-struct GamePlayerView: NSViewRepresentable {
-    @ObservedObject var viewModel: GamePlayerModel
-
+struct GamePlayerView : View {
+    @EnvironmentObject var viewModel: GamePlayerModel
+    // Optional: Environment action to close the window programmatically
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        VStack {
+            GamePlayerViewRepresentable()
+                // Recreate the renderer every time a new game is launched
+                .id(viewModel.gameSessionId)
+                .focusable()
+                .onKeyPress(phases: .down) { press in
+                    viewModel.handleKeyDown(key: press.key)
+                    return .handled
+                }
+                .onKeyPress(phases: .up) { press in
+                    viewModel.handleKeyUp(key: press.key)
+                    return .handled
+                }
+        }
+        .onDisappear {
+            print("Game window closing, unloading core.")
+            viewModel.unload()
+        }
+    }
+}
+struct GamePlayerViewRepresentable: NSViewRepresentable {
+    @EnvironmentObject var viewModel: GamePlayerModel
+    var mtkView: MTKView?
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self, viewModel: viewModel)
     }
@@ -22,6 +49,10 @@ struct GamePlayerView: NSViewRepresentable {
         mtkView.device = context.coordinator.renderer.device
         mtkView.enableSetNeedsDisplay = true  // Use delegate drawing, not internal timer
         mtkView.colorPixelFormat = .bgra8Unorm
+        // TODO: Figure out how to handle fractional framerates.
+        mtkView.preferredFramesPerSecond = Int(round(viewModel.getTargetFps()))
+        print("target fps is \(viewModel.getTargetFps())")
+        print("set fps to \(mtkView.preferredFramesPerSecond)")
         mtkView.clearColor = MTLClearColor(
             red: 0.1,
             green: 0.1,
@@ -40,11 +71,11 @@ struct GamePlayerView: NSViewRepresentable {
 
     // MARK: - Coordinator (Handles Metal Logic & Delegate)
     class Coordinator: NSObject, MTKViewDelegate {
-        var parent: GamePlayerView
+        var parent: GamePlayerViewRepresentable
         var viewModel: GamePlayerModel
         var renderer: MetalRenderer
 
-        init(_ parent: GamePlayerView, viewModel: GamePlayerModel) {
+        init(_ parent: GamePlayerViewRepresentable, viewModel: GamePlayerModel) {
             self.parent = parent
             self.viewModel = viewModel
             self.renderer = MetalRenderer()

@@ -22,6 +22,7 @@ class GamePlayerModel: NSObject, ObservableObject, LibretroCoreDelegate {
     @Published var coreIsLoaded: Bool = false
     @Published var isRunning = false
     @Published var latestFrame: Frame = Frame()
+    @Published var gameSessionId: UUID?
 
     private var core: LibretroCore?
     private var pressedKeys: Set<KeyEquivalent> = []
@@ -107,6 +108,8 @@ class GamePlayerModel: NSObject, ObservableObject, LibretroCoreDelegate {
             print("Calling load_game(NULL) for contentless core.")
             core.loadGame()
         }
+        // Force the UI to recreate any game dependent elements.
+        gameSessionId = UUID()
         coreStatus = "Running!"
         isRunning = true
     }
@@ -128,6 +131,10 @@ class GamePlayerModel: NSObject, ObservableObject, LibretroCoreDelegate {
 
     deinit { unload() }  // Ensure cleanup
 
+    func getTargetFps() -> Float64 {
+        return core?.getTargetFps() ?? 60.0
+    }
+    
     // MARK: - LibretroCoreDelegate Methods
     func renderVideoFrame(
         _ data: UnsafeRawPointer,
