@@ -16,7 +16,7 @@ struct GamePlayerView: View {
     var body: some View {
         VStack {
             GamePlayerViewRepresentable()
-                // Recreate the renderer every time a new game is launched
+            // Recreate the renderer every time a new game is launched
                 .id(viewModel.gameSessionId)
                 .focusable()
                 .onKeyPress(phases: .down) { press in
@@ -102,7 +102,7 @@ struct GamePlayerViewRepresentable: NSViewRepresentable {
 
         // Called when the view size changes (e.g., window resize)
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-            print("Drawable size changed to: \(size)")
+//            print("Drawable size changed to: \(size)")
         }
     }
 }
